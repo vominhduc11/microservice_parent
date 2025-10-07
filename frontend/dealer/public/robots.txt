@@ -1,0 +1,32 @@
+# Robots.txt for TuneZone Dealer Management System
+
+User-agent: *
+Allow: /
+
+# Allow crawling of main pages
+Allow: /products
+Allow: /warranty
+
+# Disallow sensitive areas
+Disallow: /cart
+Disallow: /checkout
+Disallow: /payment-complete
+Disallow: /qr-payment
+Disallow: /api/
+
+# Disallow admin or private areas
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /settings/
+
+# Allow static assets
+Allow: /icons/
+Allow: /images/
+Allow: /*.css
+Allow: /*.js
+
+# Crawl-delay for polite crawling
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: https://dealer.tunezone.com/sitemap.xml

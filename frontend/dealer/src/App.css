@@ -1,0 +1,178 @@
+/* App transitions */
+.app {
+  @apply opacity-100 transition-opacity duration-100 ease-in w-full relative;
+}
+
+.app.loading {
+  @apply opacity-95;
+}
+
+/* Main content wrapper to avoid header overlap - Header is consistently 70px */
+.main-content {
+  @apply w-full relative pt-[70px] box-border;
+}
+
+/* Global Button Styles - Use Tailwind classes instead of these */
+.btn {
+  @apply px-6 py-3 border-none rounded-lg text-base font-semibold cursor-pointer transition-all duration-300 no-underline inline-block text-center;
+}
+
+.btn:focus {
+  @apply outline-none;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+}
+
+.btn:disabled {
+  @apply opacity-60 cursor-not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.btn-primary {
+  @apply bg-gradient-to-br from-primary-500 to-primary-700 text-white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  @apply -translate-y-0.5 shadow-lg;
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secondary {
+  @apply bg-slate-500 text-white;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  @apply bg-slate-600 -translate-y-0.5 shadow-lg;
+}
+
+.btn-success {
+  @apply bg-success-500 text-white;
+}
+
+.btn-success:hover:not(:disabled) {
+  @apply bg-success-600 -translate-y-0.5 shadow-lg;
+}
+
+/* Global Form Styles - Use Tailwind classes instead of these */
+.form-group {
+  @apply mb-5;
+}
+
+.form-group label {
+  @apply block mb-1.5 text-slate-700 dark:text-slate-300 font-medium text-sm;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  @apply w-full px-4 py-3 border-2 border-slate-200 dark:border-slate-600 rounded-lg text-base transition-all duration-300 box-border bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  @apply outline-none border-primary-500;
+}
+
+.form-group input.error,
+.form-group select.error,
+.form-group textarea.error {
+  @apply border-danger-500;
+}
+
+.error-text {
+  @apply text-danger-500 text-xs mt-1 block;
+}
+
+/* Page transitions */
+.page {
+  @apply opacity-100 transition-opacity duration-200 ease-in-out w-full relative;
+}
+
+.page.hidden {
+  @apply hidden;
+}
+
+/* Prevent layout shift during transitions */
+.page-transition {
+  @apply relative w-full min-h-[calc(100vh-80px)];
+}
+
+/* Utility classes - These are now handled by Tailwind */
+
+/* Container styles - Use Tailwind container class instead */
+.container {
+  @apply max-w-screen-5xl mx-auto px-4 sm:px-5 md:px-6 lg:px-8 xl:px-10 2xl:px-12 3xl:px-16 4xl:px-20 5xl:px-24 w-full box-border relative;
+}
+
+@media (max-width: 768px) {
+  .btn {
+    @apply px-5 py-2.5 text-sm;
+  }
+  
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    @apply px-3 py-2.5 text-base; /* Prevent zoom on iOS */
+  }
+}
+
+@media (max-width: 480px) {
+  .btn {
+    @apply w-full mb-2.5;
+  }
+}
+
+/* Animation keyframes are now defined in tailwind.config.js */
+
+/* Animation classes - Use Tailwind animation classes instead */
+.fade-in {
+  @apply animate-fade-in opacity-0;
+}
+
+.fade-in-up {
+  @apply animate-fade-in-up;
+}
+
+.slide-in-left {
+  @apply animate-slide-in-left opacity-0 -translate-x-8;
+}
+
+.slide-in-right {
+  @apply animate-slide-in-right opacity-0 translate-x-8;
+}
+
+.slide-in-up {
+  @apply animate-fade-in-up opacity-0 translate-y-5;
+}
+
+.loading-spinner {
+  @apply animate-spin;
+}
+
+.pulse-animation {
+  @apply animate-pulse;
+}
+
+.bounce-animation {
+  @apply animate-bounce;
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    @apply hidden;
+  }
+  
+  .print-only {
+    @apply block;
+  }
+  
+  body {
+    @apply bg-white text-black text-xs leading-tight;
+  }
+  
+  .btn {
+    @apply hidden;
+  }
+}

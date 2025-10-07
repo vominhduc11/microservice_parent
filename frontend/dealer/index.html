@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    
+    <!-- PWA Meta Tags -->
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="theme-color" content="#667eea" />
+    <meta name="background-color" content="#0f172a" />
+    
+    <!-- Viewport and Mobile Optimization -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="TuneZone Dealer" />
+    
+    <!-- SEO Meta Tags -->
+    <title>TuneZone Dealer Management - Hệ thống quản lý đại lý chuyên nghiệp</title>
+    <meta name="description" content="Hệ thống quản lý đại lý TuneZone chuyên nghiệp với giao diện hiện đại, hỗ trợ dark mode và responsive design." />
+    <meta name="keywords" content="dealer management, tunezone, quản lý đại lý, bán hàng, inventory" />
+    <meta name="author" content="TuneZone Team" />
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="TuneZone Dealer Management" />
+    <meta property="og:description" content="Hệ thống quản lý đại lý TuneZone chuyên nghiệp" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://dealer.tunezone.com" />
+    <meta property="og:image" content="/og-image.png" />
+    <meta property="og:locale" content="vi_VN" />
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="TuneZone Dealer Management" />
+    <meta name="twitter:description" content="Hệ thống quản lý đại lý TuneZone chuyên nghiệp" />
+    <meta name="twitter:image" content="/twitter-image.png" />
+    
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png" />
+    
+    <!-- Sitemap -->
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+    
+    <!-- Microsoft Tiles -->
+    <meta name="msapplication-TileColor" content="#667eea" />
+    <meta name="msapplication-config" content="/browserconfig.xml" />
+    
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://images.unsplash.com" />
+
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- DNS Prefetch -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+    <link rel="dns-prefetch" href="//images.unsplash.com" />
+    
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+    
+    <!-- Accessibility -->
+    <meta name="color-scheme" content="light dark" />
+    
+    <!-- Prevent FOUC by setting theme before CSS loads -->
+    <script>
+      (function() {
+        try {
+          const stored = localStorage.getItem('theme');
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const theme = stored === 'dark' || (!stored && prefersDark) ? 'dark' : 'light';
+          if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+          }
+        } catch (e) {
+          // Fallback to light mode if localStorage is unavailable
+        }
+      })();
+    </script>
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "TuneZone Dealer Management",
+      "description": "Hệ thống quản lý đại lý TuneZone chuyên nghiệp",
+      "url": "https://dealer.tunezone.com",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "VND"
+      }
+    }
+    </script>
+  </head>
+  <body>
+    <!-- Skip to main content for screen readers -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary-500 text-white px-4 py-2 rounded z-50">
+      Chuyển đến nội dung chính
+    </a>
+    
+    <!-- Main app container -->
+    <div id="root"></div>
+    
+    <!-- Main content landmark -->
+    <main id="main-content" class="sr-only">
+      <!-- This will be populated by React -->
+    </main>
+    
+    <!-- No JavaScript fallback -->
+    <noscript>
+      <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
+        <h1>JavaScript Required</h1>
+        <p>Ứng dụng này yêu cầu JavaScript để hoạt động. Vui lòng bật JavaScript trong trình duyệt của bạn.</p>
+        <p>This application requires JavaScript to function. Please enable JavaScript in your browser.</p>
+      </div>
+    </noscript>
+    
+    
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

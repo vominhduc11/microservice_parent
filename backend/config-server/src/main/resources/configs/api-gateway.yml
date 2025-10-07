@@ -1,0 +1,300 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+# SpringDoc/OpenAPI Configuration for API Gateway
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    urls:
+      - name: Auth Service
+        url: /api/auth/v3/api-docs
+      - name: User Service
+        url: /api/user/v3/api-docs
+      - name: Product Service
+        url: /api/product/v3/api-docs
+      - name: Cart Service
+        url: /api/cart/v3/api-docs
+      - name: Order Service
+        url: /api/order/v3/api-docs
+      - name: Blog Service
+        url: /api/blog/v3/api-docs
+      - name: Notification Service
+        url: /api/notification/v3/api-docs
+      - name: Media Service
+        url: /api/media/v3/api-docs
+      - name: Report Service
+        url: /api/report/v3/api-docs
+      - name: Warranty Service
+        url: /api/warranty/v3/api-docs
+  api-docs:
+    enabled: true  # API Gateway không cần docs riêng
+
+spring:
+  data:
+    redis:
+      host: ${REDIS_HOST:redis-cache}
+      port: ${REDIS_PORT:6379}
+  servlet:
+    multipart:
+      max-file-size: 500MB
+      max-request-size: 500MB
+  cloud:
+    gateway:
+      routes:
+        # ===================================================================================
+        # SWAGGER UI - Centralized Documentation Hub
+        # ===================================================================================
+        # Optimized Swagger UI routes - Removed redundancy
+        - id: swagger-ui-all
+          uri: ${AUTH_SERVICE_URI:http://auth-service:8081}
+          order: 50
+          predicates:
+            - Path=/swagger-ui,/swagger-ui/,/swagger-ui/**
+          filters:
+            - AddRequestHeader=X-Gateway-Request, true        # API Docs endpoints for each service
+        - id: auth-api-docs
+          uri: ${AUTH_SERVICE_URI}
+          predicates:
+            - Path=/api/auth/v3/api-docs/**
+          filters:
+            - StripPrefix=2
+            - AddRequestHeader=X-Gateway-Request, true
+          order: 100
+            
+        - id: user-api-docs
+          uri: ${USER_SERVICE_URI}
+          predicates:
+            - Path=/api/user/v3/api-docs/**
+          filters:
+            - StripPrefix=2
+            - AddRequestHeader=X-Gateway-Request, true
+          order: 100
+            
+        - id: warranty-api-docs
+          uri: ${WARRANTY_SERVICE_URI}
+          predicates:
+            - Path=/api/warranty/v3/api-docs/**
+          filters:
+            - StripPrefix=2
+            - AddRequestHeader=X-Gateway-Request, true
+          order: 100
+            
+        - id: blog-api-docs
+          uri: ${BLOG_SERVICE_URI}
+          predicates:
+            - Path=/api/blog/v3/api-docs/**
+          filters:
+            - StripPrefix=2
+            - AddRequestHeader=X-Gateway-Request, true
+          order: 100
+            
+        - id: product-api-docs
+          uri: ${PRODUCT_SERVICE_URI}
+          predicates:
+            - Path=/api/product/v3/api-docs/**
+          filters:
+            - StripPrefix=2
+            - AddRequestHeader=X-Gateway-Request, true
+          order: 100
+            
+        - id: notification-api-docs
+          uri: ${NOTIFICATION_SERVICE_URI}
+          predicates:
+            - Path=/api/notification/v3/api-docs/**
+          filters:
+            - StripPrefix=2
+            - AddRequestHeader=X-Gateway-Request, true
+          order: 100
+            
+        - id: cart-api-docs
+          uri: ${CART_SERVICE_URI}
+          predicates:
+            - Path=/api/cart/v3/api-docs/**
+          filters:
+            - StripPrefix=2
+            - AddRequestHeader=X-Gateway-Request, true
+          order: 100
+            
+        - id: order-api-docs
+          uri: ${ORDER_SERVICE_URI}
+          predicates:
+            - Path=/api/order/v3/api-docs/**
+          filters:
+            - StripPrefix=2
+            - AddRequestHeader=X-Gateway-Request, true
+          order: 100
+            
+        - id: media-api-docs
+          uri: ${MEDIA_SERVICE_URI}
+          predicates:
+            - Path=/api/media/v3/api-docs/**
+          filters:
+            - StripPrefix=2
+            - AddRequestHeader=X-Gateway-Request, true
+          order: 100
+
+        - id: report-api-docs
+          uri: ${REPORT_SERVICE_URI}
+          predicates:
+            - Path=/api/report/v3/api-docs/**
+          filters:
+            - StripPrefix=2
+            - AddRequestHeader=X-Gateway-Request, true
+          order: 100
+
+
+        # ===================================================================================
+        # JWT/JWKS ENDPOINT
+        # ===================================================================================
+        - id: auth-service-jwks-api
+          uri: ${AUTH_SERVICE_URI}
+          predicates:
+            - Path=/api/auth/.well-known/jwks.json
+          filters:
+            - StripPrefix=1                    # /api/auth/.well-known/jwks.json → /auth/.well-known/jwks.json
+            - AddRequestHeader=X-Gateway-Request, true
+          order: 50
+            
+        - id: auth-service-jwks
+          uri: ${AUTH_SERVICE_URI}
+          predicates:
+            - Path=/auth/.well-known/jwks.json
+          filters:
+            - AddRequestHeader=X-Gateway-Request, true
+          order: 50
+            
+        # ===================================================================================
+        # BUSINESS API ROUTES - Order 200 (Lower Priority)
+        # Main business logic endpoints for all microservices
+        # Security: All routes require X-Gateway-Request header for service access control
+        # URL Pattern: /api/{service}/** → StripPrefix=1 → /{service}/**
+        # ===================================================================================
+        
+        # Auth Service API Routes
+        - id: auth-service
+          uri: ${AUTH_SERVICE_URI}
+          predicates:
+            - Path=/api/auth/**               # Standard API pattern
+          filters:
+            - StripPrefix=1                   # /api/auth/** → /auth/**
+            - AddRequestHeader=X-Gateway-Request, true
+          order: 200
+
+        # User Management Service API Routes
+        - id: user-service
+          uri: ${USER_SERVICE_URI}
+          order: 200
+          predicates:
+            - Path=/api/user/**               # Customer & Reseller management
+          filters:
+            - StripPrefix=1                   # /api/user/** → /user/**
+            - AddRequestHeader=X-Gateway-Request, true
+
+        # Admin Service API Routes (part of user-service)
+        - id: admin-service
+          uri: ${USER_SERVICE_URI}
+          order: 200
+          predicates:
+            - Path=/api/admin/**              # Admin operations
+          filters:
+            - StripPrefix=1                   # /api/admin/** → /admin/**
+            - AddRequestHeader=X-Gateway-Request, true
+
+
+        # Blog Service API Routes (CMS)
+        - id: blog-service
+          uri: ${BLOG_SERVICE_URI}
+          order: 200
+          predicates:
+            - Path=/api/blog/**               # Blog posts, categories, comments
+          filters:
+            - StripPrefix=1                   # /api/blog/** → /blog/**
+            - AddRequestHeader=X-Gateway-Request, true
+
+        # Warranty Service API Routes
+        - id: warranty-service
+          uri: ${WARRANTY_SERVICE_URI}
+          order: 200
+          predicates:
+            - Path=/api/warranty/**           # Warranty tracking & claims
+          filters:
+            - StripPrefix=1                   # /api/warranty/** → /warranty/**
+            - AddRequestHeader=X-Gateway-Request, true
+
+        # Product Service API Routes
+        - id: product-service
+          uri: ${PRODUCT_SERVICE_URI}
+          order: 200
+          predicates:
+            - Path=/api/product/**            # Product catalog & management
+          filters:
+            - StripPrefix=1                   # /api/product/** → /product/**
+            - AddRequestHeader=X-Gateway-Request, true
+
+        # Cart Service API Routes
+        - id: cart-service
+          uri: ${CART_SERVICE_URI}
+          order: 200
+          predicates:
+            - Path=/api/cart/**               # Shopping cart management
+          filters:
+            - StripPrefix=1                   # /api/cart/** → /cart/**
+            - AddRequestHeader=X-Gateway-Request, true
+
+        # Order Service API Routes
+        - id: order-service
+          uri: ${ORDER_SERVICE_URI}
+          order: 200
+          predicates:
+            - Path=/api/order/**              # Order processing & management
+          filters:
+            - StripPrefix=1                   # /api/order/** → /order/**
+            - AddRequestHeader=X-Gateway-Request, true
+
+        # Notification Service API Routes
+        - id: notification-service
+          uri: ${NOTIFICATION_SERVICE_URI}
+          order: 200
+          predicates:
+            - Path=/api/notification/**       # Notification management
+          filters:
+            - StripPrefix=1                   # /api/notification/** → /notification/**
+            - AddRequestHeader=X-Gateway-Request, true
+
+        # Media Service API Routes
+        - id: media-service
+          uri: ${MEDIA_SERVICE_URI}
+          order: 200
+          predicates:
+            - Path=/api/media/**              # Media upload & management
+          filters:
+            - StripPrefix=1                   # /api/media/** → /media/**
+            - AddRequestHeader=X-Gateway-Request, true
+
+        # Report Service API Routes
+        - id: report-service-new-apis
+          uri: ${REPORT_SERVICE_URI}
+          order: 200
+          predicates:
+            - Path=/api/reports/**            # New dashboard APIs (overview, revenue, dealers, products)
+          filters:
+            - StripPrefix=1                   # /api/reports/** → /reports/**
+            - AddRequestHeader=X-Gateway-Request, true
+
+        - id: report-service
+          uri: ${REPORT_SERVICE_URI}
+          order: 200
+          predicates:
+            - Path=/api/report/**             # Legacy dashboard & analytics
+          filters:
+            - StripPrefix=1                   # /api/report/** → /report/**
+            - AddRequestHeader=X-Gateway-Request, true
+
+      # ===================================================================================
+      # GLOBAL CONFIGURATIONS
+      # ===================================================================================
+      # CORS DISABLED - All browser traffic goes through frontend reverse proxies (same-origin)
+      # Frontend proxies (Nginx/Next.js) forward requests to api-gateway via Docker network
+      # No cross-origin requests occur, so CORS is not needed
+

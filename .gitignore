@@ -1,0 +1,159 @@
+# Maven
+target/
+.mvn/
+!.mvn/wrapper/
+!**/src/main/**/target/
+!**/src/test/**/target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+
+# Spring Boot
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+*.log
+*.logs
+
+# IDE
+.idea/
+*.iws
+*.iml
+*.ipr
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Java
+*.class
+*.log
+*.ctxt
+.mtj.tmp/
+hs_err_pid*
+replay_pid*
+
+# Docker
+.dockerignore
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~
+.#*
+
+# Build directories
+build/
+dist/
+out/
+
+# Test results and reports
+surefire-reports/
+TEST-*.xml
+**/test-results/
+**/coverage/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+logs/
+*.log
+log/
+application.log*
+
+# Config files (sensitive) - Allow essential configs
+application-local.properties
+application-local.yml
+application-dev.properties
+application-dev.yml
+application-prod.properties
+application-prod.yml
+database.properties
+secret.properties
+
+# Security
+*.key
+*.pem
+*.p12
+*.jks
+keystore*
+truststore*
+
+# Node.js (if any frontend)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Gradle (if any service uses Gradle)
+.gradle/
+gradle-app.setting
+!gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+
+# Eclipse
+.classpath
+.project
+.settings/
+bin/
+
+# NetBeans
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# VS Code
+.vscode/
+
+# JetBrains IDEs
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# Local development
+local/
+local-config/
+
+# Docker volumes data
+postgres_data/
+redis_data/
+zookeeper*_data/
+zookeeper*_logs/
+kafka*_data/

@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: report-service
+  config:
+    import: "optional:configserver:http://config-server:8888"
+
+# API Configuration - Must match other microservices
+api:
+  internal:
+    key: ${INTERNAL_API_KEY:INTER_SERVICE_KEY}
+
+# Auth API key for external service calls
+auth:
+  api:
+    key: ${AUTH_API_KEY:INTER_SERVICE_KEY}
+
+# Logging configuration
+logging:
+  level:
+    com.devwonder.reportservice: DEBUG
+    feign: DEBUG

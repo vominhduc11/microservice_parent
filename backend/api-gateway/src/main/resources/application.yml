@@ -1,0 +1,13 @@
+# ===================================================================================
+# BASIC APPLICATION CONFIGURATION
+# Detailed SpringDoc configuration is in Config Server
+# ===================================================================================
+
+spring:
+  application:
+    name: api-gateway
+  config:
+    import: "optional:configserver:http://config-server:8888"
+
+server:
+  port: 8080

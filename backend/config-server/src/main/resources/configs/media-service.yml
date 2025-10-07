@@ -1,0 +1,49 @@
+server:
+  port: ${SERVER_PORT:8090}
+
+spring:
+  application:
+    name: media-service
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+# Cloudinary Configuration (use environment variables - DO NOT commit real values)
+cloudinary:
+  cloud-name: ${CLOUDINARY_CLOUD_NAME:your-cloud-name}
+  api-key: ${CLOUDINARY_API_KEY:your-api-key}
+  api-secret: ${CLOUDINARY_API_SECRET:your-api-secret}
+  secure: ${CLOUDINARY_SECURE:true}
+
+# File upload security constraints
+file:
+  upload:
+    max-size: 10485760  # 10MB in bytes
+    allowed-types: image/jpeg,image/png,image/gif,image/webp
+    allowed-extensions: jpg,jpeg,png,gif,webp
+
+# Logging configuration
+logging:
+  level:
+    com.devwonder.mediaservice: DEBUG
+    com.cloudinary: DEBUG
+
+# Swagger/OpenAPI Configuration
+springdoc:
+  api-docs:
+    enabled: ${SWAGGER_API_DOCS_ENABLED:true}
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: ${SWAGGER_UI_ENABLED:true}
+    path: /swagger-ui.html
+  show-actuator: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always

@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(for service in auth-service product-service cart-service order-service blog-service notification-service report-service warranty-service)",
+      "Bash(do)",
+      "Bash(echo:*)",
+      "Bash(sed:*)",
+      "Bash(done)",
+      "Bash(docker volume:*)",
+      "Bash(docker-compose up:*)",
+      "Bash(cat:*)",
+      "Bash(git add:*)",
+      "Bash(docker-compose logs:*)",
+      "Bash(docker compose:*)",
+      "Bash(find:*)",
+      "Bash(docker exec:*)",
+      "Bash(for service in auth-service blog-service cart-service notification-service order-service product-service user-service warranty-service)",
+      "Bash(do echo \"=== $service ===\")",
+      "Bash(grep:*)",
+      "Bash(kubectl kustomize:*)",
+      "Bash(for dir in */)",
+      "Bash(do echo \"=== $dir ===\")",
+      "Bash(ls:*)",
+      "Bash(/dev/null)",
+      "Bash(kubectl describe:*)",
+      "Bash(kubectl get:*)",
+      "Bash(kubectl apply:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

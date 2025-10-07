@@ -1,0 +1,551 @@
+x-java-service: &java-service-template
+  volumes:
+    - maven-cache:/root/.m2
+  networks:
+    - microservices-network
+  restart: unless-stopped
+  environment: &common-env
+    CONFIG_SERVER_URL: http://config-server:8888
+    SWAGGER_UI_ENABLED: true
+    SWAGGER_API_DOCS_ENABLED: true
+
+x-build-args: &build-args
+  context: ./backend
+  args:
+    BUILDKIT_INLINE_CACHE: 1
+
+services:
+  # Infrastructure Services
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres-db
+    environment:
+      POSTGRES_DB: microservices_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/scripts/database/init-databases.sql:/docker-entrypoint-initdb.d/01-init-databases.sql
+    networks:
+      - microservices-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis-cache
+    ports:
+      - "6379:6379"
+    networks:
+      - microservices-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: redis-commander
+    hostname: redis-commander
+    ports:
+      - "8090:8081"
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+      - HTTP_USER=admin
+      - HTTP_PASSWORD=admin123
+    depends_on:
+      - redis
+    networks:
+      - microservices-network
+    restart: unless-stopped
+
+  # Zookeeper Cluster (3 nodes)
+  zookeeper1:
+    image: confluentinc/cp-zookeeper:7.4.0
+    container_name: zookeeper1
+    environment:
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: zookeeper1:2888:3888;zookeeper2:2888:3888;zookeeper3:2888:3888
+    ports:
+      - "2181:2181"
+    volumes:
+      - zookeeper1_data:/var/lib/zookeeper/data
+      - zookeeper1_logs:/var/lib/zookeeper/log
+    networks:
+      - microservices-network
+    restart: unless-stopped
+
+  zookeeper2:
+    image: confluentinc/cp-zookeeper:7.4.0
+    container_name: zookeeper2
+    environment:
+      ZOOKEEPER_SERVER_ID: 2
+      ZOOKEEPER_CLIENT_PORT: 2182
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: zookeeper1:2888:3888;zookeeper2:2888:3888;zookeeper3:2888:3888
+    ports:
+      - "2182:2182"
+    volumes:
+      - zookeeper2_data:/var/lib/zookeeper/data
+      - zookeeper2_logs:/var/lib/zookeeper/log
+    networks:
+      - microservices-network
+    restart: unless-stopped
+
+  zookeeper3:
+    image: confluentinc/cp-zookeeper:7.4.0
+    container_name: zookeeper3
+    environment:
+      ZOOKEEPER_SERVER_ID: 3
+      ZOOKEEPER_CLIENT_PORT: 2183
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: zookeeper1:2888:3888;zookeeper2:2888:3888;zookeeper3:2888:3888
+    ports:
+      - "2183:2183"
+    volumes:
+      - zookeeper3_data:/var/lib/zookeeper/data
+      - zookeeper3_logs:/var/lib/zookeeper/log
+    networks:
+      - microservices-network
+    restart: unless-stopped
+
+  # Kafka Cluster (3 brokers)
+  kafka1:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: kafka1
+    depends_on:
+      - zookeeper1
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper1:2181,zookeeper2:2182,zookeeper3:2183
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka1:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 1
+      KAFKA_MIN_IN_SYNC_REPLICAS: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+    volumes:
+      - kafka1_data:/var/lib/kafka/data
+    networks:
+      - microservices-network
+    restart: unless-stopped
+
+  kafka2:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: kafka2
+    depends_on:
+      - zookeeper1
+    ports:
+      - "9093:9093"
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper1:2181,zookeeper2:2182,zookeeper3:2183
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka2:9093
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 1
+      KAFKA_MIN_IN_SYNC_REPLICAS: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+    volumes:
+      - kafka2_data:/var/lib/kafka/data
+    networks:
+      - microservices-network
+    restart: unless-stopped
+
+  kafka3:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: kafka3
+    depends_on:
+      - zookeeper1
+    ports:
+      - "9094:9094"
+    environment:
+      KAFKA_BROKER_ID: 3
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper1:2181,zookeeper2:2182,zookeeper3:2183
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka3:9094
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 1
+      KAFKA_MIN_IN_SYNC_REPLICAS: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+    volumes:
+      - kafka3_data:/var/lib/kafka/data
+    networks:
+      - microservices-network
+    restart: unless-stopped
+
+  # Kafka UI
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    ports:
+      - "8091:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: microservices_cluster
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka1:9092,kafka2:9093,kafka3:9094
+      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper1:2181,zookeeper2:2182,zookeeper3:2183
+    depends_on:
+      - kafka1
+    networks:
+      - microservices-network
+    restart: unless-stopped
+
+  # Service Discovery & Configuration
+  config-server:
+    build:
+      <<: *build-args
+      dockerfile: config-server/Dockerfile
+    <<: *java-service-template
+    container_name: config-server
+    ports:
+      - "8888:8888"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8888/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # API Gateway
+  api-gateway:
+    build:
+      <<: *build-args
+      dockerfile: api-gateway/Dockerfile
+    <<: *java-service-template
+    container_name: api-gateway
+    # Port 8080 only accessible within Docker network (via frontend proxies)
+    expose:
+      - "8080"
+    depends_on:
+      config-server:
+        condition: service_healthy
+    environment:
+      <<: *common-env
+      AUTH_SERVICE_URI: http://auth-service:8081
+      USER_SERVICE_URI: http://user-service:8082
+      PRODUCT_SERVICE_URI: http://product-service:8083
+      CART_SERVICE_URI: http://cart-service:8084
+      ORDER_SERVICE_URI: http://order-service:8085
+      WARRANTY_SERVICE_URI: http://warranty-service:8086
+      NOTIFICATION_SERVICE_URI: http://notification-service:8087
+      BLOG_SERVICE_URI: http://blog-service:8088
+      MEDIA_SERVICE_URI: http://media-service:8090
+      REPORT_SERVICE_URI: http://report-service:8089
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Core Services
+  auth-service:
+    build:
+      <<: *build-args
+      dockerfile: auth-service/Dockerfile
+    <<: *java-service-template
+    container_name: auth-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      config-server:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    environment:
+      <<: *common-env
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: auth_service_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8081/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  user-service:
+    build:
+      <<: *build-args
+      dockerfile: user-service/Dockerfile
+    <<: *java-service-template
+    container_name: user-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      - config-server
+      - postgres
+    environment:
+      <<: *common-env
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: user_service_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      AUTH_SERVICE_URL: http://auth-service:8081
+
+  product-service:
+    build:
+      <<: *build-args
+      dockerfile: product-service/Dockerfile
+    <<: *java-service-template
+    container_name: product-service
+    ports:
+      - "8083:8083"
+    depends_on:
+      - config-server
+      - postgres
+    environment:
+      <<: *common-env
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: product_service_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+
+  cart-service:
+    build:
+      <<: *build-args
+      dockerfile: cart-service/Dockerfile
+    <<: *java-service-template
+    container_name: cart-service
+    ports:
+      - "8084:8084"
+    depends_on:
+      - config-server
+      - postgres
+      - redis
+    environment:
+      <<: *common-env
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: cart_service_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      PRODUCT_SERVICE_URL: http://product-service:8083
+      USER_SERVICE_URL: http://user-service:8082
+
+  order-service:
+    build:
+      <<: *build-args
+      dockerfile: order-service/Dockerfile
+    <<: *java-service-template
+    container_name: order-service
+    ports:
+      - "8085:8085"
+    depends_on:
+      - config-server
+      - postgres
+      - kafka1
+    environment:
+      <<: *common-env
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: order_service_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      CART_SERVICE_URL: http://cart-service:8084
+      PRODUCT_SERVICE_URL: http://product-service:8083
+      USER_SERVICE_URL: http://user-service:8082
+      KAFKA_BOOTSTRAP_SERVERS: kafka1:9092,kafka2:9093,kafka3:9094
+
+  warranty-service:
+    build:
+      <<: *build-args
+      dockerfile: warranty-service/Dockerfile
+    <<: *java-service-template
+    container_name: warranty-service
+    ports:
+      - "8086:8086"
+    depends_on:
+      - config-server
+      - postgres
+    environment:
+      <<: *common-env
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: warranty_service_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      PRODUCT_SERVICE_URL: http://product-service:8083
+      ORDER_SERVICE_URL: http://order-service:8085
+
+  notification-service:
+    build:
+      <<: *build-args
+      dockerfile: notification-service/Dockerfile
+    <<: *java-service-template
+    container_name: notification-service
+    ports:
+      - "8087:8087"
+    depends_on:
+      - config-server
+      - postgres
+      - redis
+      - kafka1
+    environment:
+      <<: *common-env
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: notification_service_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      KAFKA_BOOTSTRAP_SERVERS: kafka1:9092,kafka2:9093,kafka3:9094
+      MAIL_HOST: smtp.gmail.com
+      MAIL_PORT: 587
+      MAIL_USERNAME: vominhduc760@gmail.com
+      MAIL_PASSWORD: osvxpsnfohbpwiqz
+
+  blog-service:
+    build:
+      <<: *build-args
+      dockerfile: blog-service/Dockerfile
+    <<: *java-service-template
+    container_name: blog-service
+    ports:
+      - "8088:8088"
+    depends_on:
+      - config-server
+      - postgres
+    environment:
+      <<: *common-env
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: blog_service_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      USER_SERVICE_URL: http://user-service:8082
+
+  media-service:
+    build:
+      <<: *build-args
+      dockerfile: media-service/Dockerfile
+    <<: *java-service-template
+    container_name: media-service
+    ports:
+      - "8095:8090"
+    depends_on:
+      - config-server
+    environment:
+      <<: *common-env
+      SERVER_PORT: 8090
+      CLOUDINARY_CLOUD_NAME: daohufjec
+      CLOUDINARY_API_KEY: 872317127931114
+      CLOUDINARY_API_SECRET: N4qcHq42OqjlyK5GiQoZfk1UXfE
+
+  report-service:
+    build:
+      <<: *build-args
+      dockerfile: report-service/Dockerfile
+    <<: *java-service-template
+    container_name: report-service
+    ports:
+      - "8089:8089"
+    depends_on:
+      - config-server
+      - postgres
+    environment:
+      <<: *common-env
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: report_service_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      ORDER_SERVICE_URL: http://order-service:8085
+      PRODUCT_SERVICE_URL: http://product-service:8083
+      USER_SERVICE_URL: http://user-service:8082
+
+  # Frontend Services
+  admin-frontend:
+    build:
+      context: ./frontend/admin
+      dockerfile: Dockerfile
+    container_name: admin-frontend
+    ports:
+      - "9000:80"
+    depends_on:
+      api-gateway:
+        condition: service_healthy
+    networks:
+      - microservices-network
+    restart: unless-stopped
+
+  dealer-frontend:
+    build:
+      context: ./frontend/dealer
+      dockerfile: Dockerfile
+    container_name: dealer-frontend
+    ports:
+      - "5174:80"
+    depends_on:
+      api-gateway:
+        condition: service_healthy
+    networks:
+      - microservices-network
+    restart: unless-stopped
+
+  main-frontend:
+    build:
+      context: ./frontend/main
+      dockerfile: Dockerfile
+    container_name: main-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      api-gateway:
+        condition: service_healthy
+    networks:
+      - microservices-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  zookeeper1_data:
+  zookeeper1_logs:
+  zookeeper2_data:
+  zookeeper2_logs:
+  zookeeper3_data:
+  zookeeper3_logs:
+  kafka1_data:
+  kafka2_data:
+  kafka3_data:
+  maven-cache:
+
+networks:
+  microservices-network:
+    driver: bridge
