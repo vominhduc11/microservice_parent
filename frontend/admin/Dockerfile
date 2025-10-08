@@ -4,10 +4,10 @@ FROM node:20-alpine AS build
 WORKDIR /app
 
 # Copy package files
-COPY package.json package-lock.json* ./
+COPY package.json bun.lockb ./
 
 # Install all dependencies (including dev dependencies for build)
-RUN npm ci
+RUN npm install -g bun && bun install --frozen
 
 # Copy source code
 COPY . .
