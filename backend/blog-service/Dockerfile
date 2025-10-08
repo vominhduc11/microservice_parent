@@ -2,9 +2,6 @@
 FROM maven:3.9-eclipse-temurin-17 AS build
 WORKDIR /app
 
-# Copy Maven settings with retry configuration
-COPY blog-service/settings.xml /root/.m2/settings.xml
-
 # Step 1: Build and cache common-service (rarely changes)
 COPY common-service/pom.xml common-service/
 RUN mvn -f common-service/pom.xml dependency:go-offline -B
@@ -13,7 +10,7 @@ RUN mvn -f common-service/pom.xml clean install -DskipTests
 
 # Step 2: Cache dependencies for blog-service
 COPY blog-service/pom.xml blog-service/
-RUN mvn -f blog-service/pom.xml dependency:go-offline -B -Dmaven.wagon.http.pool=false
+RUN mvn -f blog-service/pom.xml dependency:go-offline -B
 
 # Step 3: Copy code and build
 COPY blog-service/src blog-service/src
