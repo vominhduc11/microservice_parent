@@ -30,7 +30,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(@NonNull StompEndpointRegistry registry) {
         // Register SockJS endpoint with WebSocket fallback
         registry.addEndpoint("/ws")
-                .setAllowedOriginPatterns("http://localhost:9000")
+                .setAllowedOriginPatterns("http://4thitek.vn:9000")
                 .withSockJS();
     }
 
