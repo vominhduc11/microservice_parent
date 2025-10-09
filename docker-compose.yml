@@ -15,33 +15,8 @@ x-build-args: &build-args
     BUILDKIT_INLINE_CACHE: 1
 
 services:
-  # Reverse Proxy (Main Entry Point)
-  reverse-proxy:
-    build:
-      context: ./reverse-proxy
-      dockerfile: Dockerfile
-    container_name: reverse-proxy
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      # Mount SSL certificates from host to container
-      - ./reverse-proxy/ssl/4thitek.vn/fullchain.pem:/etc/nginx/ssl/4thitek.vn/fullchain.pem:ro
-      - ./reverse-proxy/ssl/4thitek.vn/privkey.pem:/etc/nginx/ssl/4thitek.vn/privkey.pem:ro
-      - nginx-logs:/var/log/nginx
-    depends_on:
-      - api-gateway
-      - admin-frontend
-      - dealer-frontend
-      - main-frontend
-    networks:
-      - microservices-network
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+  # NOTE: Using Nginx on HOST instead of container
+  # Config location: /etc/nginx/sites-available/4thitek.vn on production server
 
   # Infrastructure Services
   postgres:
@@ -86,7 +61,7 @@ services:
     container_name: redis-commander
     hostname: redis-commander
     ports:
-      - "8090:8081"
+      - "127.0.0.1:8090:8081"  # Bind to localhost only
     environment:
       - REDIS_HOSTS=local:redis:6379
       - HTTP_USER=admin
@@ -240,7 +215,7 @@ services:
     image: provectuslabs/kafka-ui:latest
     container_name: kafka-ui
     ports:
-      - "8091:8080"
+      - "127.0.0.1:8091:8080"  # Bind to localhost only
     environment:
       KAFKA_CLUSTERS_0_NAME: microservices_cluster
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka1:9092,kafka2:9093,kafka3:9094
@@ -276,9 +251,9 @@ services:
       dockerfile: api-gateway/Dockerfile
     <<: *java-service-template
     container_name: api-gateway
-    # Port 8080 only accessible within Docker network (via frontend proxies)
-    expose:
-      - "8080"
+    # Expose to host for Nginx proxy_pass http://localhost:8080
+    ports:
+      - "127.0.0.1:8080:8080"
     depends_on:
       config-server:
         condition: service_healthy
@@ -533,12 +508,11 @@ services:
       context: ./frontend/admin
       dockerfile: Dockerfile
     container_name: admin-frontend
-    # Only expose internally - accessed via reverse proxy
-    expose:
-      - "80"
+    # Expose to host for Nginx proxy_pass http://localhost:9000
+    ports:
+      - "127.0.0.1:9000:80"
     depends_on:
-      api-gateway:
-        condition: service_healthy
+      - api-gateway
     networks:
       - microservices-network
     restart: unless-stopped
@@ -548,11 +522,11 @@ services:
       context: ./frontend/dealer
       dockerfile: Dockerfile
     container_name: dealer-frontend
-    expose:
-      - "80"
+    # Expose to host for Nginx proxy_pass http://localhost:5173
+    ports:
+      - "127.0.0.1:5173:80"
     depends_on:
-      api-gateway:
-        condition: service_healthy
+      - api-gateway
     networks:
       - microservices-network
     restart: unless-stopped
@@ -562,11 +536,11 @@ services:
       context: ./frontend/main
       dockerfile: Dockerfile
     container_name: main-frontend
-    expose:
-      - "3000"
+    # Expose to host for Nginx proxy_pass http://localhost:3000
+    ports:
+      - "127.0.0.1:3000:3000"
     depends_on:
-      api-gateway:
-        condition: service_healthy
+      - api-gateway
     networks:
       - microservices-network
     restart: unless-stopped
@@ -583,7 +557,6 @@ volumes:
   kafka2_data:
   kafka3_data:
   maven-cache:
-  nginx-logs:
 
 networks:
   microservices-network:
