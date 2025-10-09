@@ -25,7 +25,9 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./reverse-proxy/ssl:/etc/nginx/ssl
+      # Mount SSL certificates from host to container
+      - ./reverse-proxy/ssl/4thitek.vn/fullchain.pem:/etc/nginx/ssl/4thitek.vn/fullchain.pem:ro
+      - ./reverse-proxy/ssl/4thitek.vn/privkey.pem:/etc/nginx/ssl/4thitek.vn/privkey.pem:ro
       - nginx-logs:/var/log/nginx
     depends_on:
       - api-gateway
