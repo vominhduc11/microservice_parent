@@ -15,6 +15,32 @@ x-build-args: &build-args
     BUILDKIT_INLINE_CACHE: 1
 
 services:
+  # Reverse Proxy (Main Entry Point)
+  reverse-proxy:
+    build:
+      context: ./reverse-proxy
+      dockerfile: Dockerfile
+    container_name: reverse-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./reverse-proxy/ssl:/etc/nginx/ssl
+      - nginx-logs:/var/log/nginx
+    depends_on:
+      - api-gateway
+      - admin-frontend
+      - dealer-frontend
+      - main-frontend
+    networks:
+      - microservices-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
   # Infrastructure Services
   postgres:
     image: postgres:15-alpine
@@ -23,8 +49,9 @@ services:
       POSTGRES_DB: microservices_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-    ports:
-      - "5432:5432"
+    # Only expose internally - removed public port mapping for security
+    expose:
+      - "5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./backend/scripts/database/init-databases.sql:/docker-entrypoint-initdb.d/01-init-databases.sql
@@ -40,8 +67,9 @@ services:
   redis:
     image: redis:7-alpine
     container_name: redis-cache
-    ports:
-      - "6379:6379"
+    # Only expose internally
+    expose:
+      - "6379"
     networks:
       - microservices-network
     restart: unless-stopped
@@ -78,8 +106,9 @@ services:
       ZOOKEEPER_INIT_LIMIT: 5
       ZOOKEEPER_SYNC_LIMIT: 2
       ZOOKEEPER_SERVERS: zookeeper1:2888:3888;zookeeper2:2888:3888;zookeeper3:2888:3888
-    ports:
-      - "2181:2181"
+    # Only expose internally
+    expose:
+      - "2181"
     volumes:
       - zookeeper1_data:/var/lib/zookeeper/data
       - zookeeper1_logs:/var/lib/zookeeper/log
@@ -97,8 +126,8 @@ services:
       ZOOKEEPER_INIT_LIMIT: 5
       ZOOKEEPER_SYNC_LIMIT: 2
       ZOOKEEPER_SERVERS: zookeeper1:2888:3888;zookeeper2:2888:3888;zookeeper3:2888:3888
-    ports:
-      - "2182:2182"
+    expose:
+      - "2182"
     volumes:
       - zookeeper2_data:/var/lib/zookeeper/data
       - zookeeper2_logs:/var/lib/zookeeper/log
@@ -116,8 +145,8 @@ services:
       ZOOKEEPER_INIT_LIMIT: 5
       ZOOKEEPER_SYNC_LIMIT: 2
       ZOOKEEPER_SERVERS: zookeeper1:2888:3888;zookeeper2:2888:3888;zookeeper3:2888:3888
-    ports:
-      - "2183:2183"
+    expose:
+      - "2183"
     volumes:
       - zookeeper3_data:/var/lib/zookeeper/data
       - zookeeper3_logs:/var/lib/zookeeper/log
@@ -131,8 +160,8 @@ services:
     container_name: kafka1
     depends_on:
       - zookeeper1
-    ports:
-      - "9092:9092"
+    expose:
+      - "9092"
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper1:2181,zookeeper2:2182,zookeeper3:2183
@@ -157,8 +186,8 @@ services:
     container_name: kafka2
     depends_on:
       - zookeeper1
-    ports:
-      - "9093:9093"
+    expose:
+      - "9093"
     environment:
       KAFKA_BROKER_ID: 2
       KAFKA_ZOOKEEPER_CONNECT: zookeeper1:2181,zookeeper2:2182,zookeeper3:2183
@@ -183,8 +212,8 @@ services:
     container_name: kafka3
     depends_on:
       - zookeeper1
-    ports:
-      - "9094:9094"
+    expose:
+      - "9094"
     environment:
       KAFKA_BROKER_ID: 3
       KAFKA_ZOOKEEPER_CONNECT: zookeeper1:2181,zookeeper2:2182,zookeeper3:2183
@@ -227,8 +256,11 @@ services:
       dockerfile: config-server/Dockerfile
     <<: *java-service-template
     container_name: config-server
-    ports:
-      - "8888:8888"
+    # For production, comment out ports and use expose only
+    # ports:
+    #   - "8888:8888"
+    expose:
+      - "8888"
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:8888/actuator/health"]
       interval: 30s
@@ -273,8 +305,11 @@ services:
       dockerfile: auth-service/Dockerfile
     <<: *java-service-template
     container_name: auth-service
-    ports:
-      - "8081:8081"
+    # For production, comment out ports and use expose only
+    # ports:
+    #   - "8081:8081"
+    expose:
+      - "8081"
     depends_on:
       config-server:
         condition: service_healthy
@@ -301,8 +336,8 @@ services:
       dockerfile: user-service/Dockerfile
     <<: *java-service-template
     container_name: user-service
-    ports:
-      - "8082:8082"
+    expose:
+      - "8082"
     depends_on:
       - config-server
       - postgres
@@ -321,8 +356,8 @@ services:
       dockerfile: product-service/Dockerfile
     <<: *java-service-template
     container_name: product-service
-    ports:
-      - "8083:8083"
+    expose:
+      - "8083"
     depends_on:
       - config-server
       - postgres
@@ -340,8 +375,8 @@ services:
       dockerfile: cart-service/Dockerfile
     <<: *java-service-template
     container_name: cart-service
-    ports:
-      - "8084:8084"
+    expose:
+      - "8084"
     depends_on:
       - config-server
       - postgres
@@ -364,8 +399,8 @@ services:
       dockerfile: order-service/Dockerfile
     <<: *java-service-template
     container_name: order-service
-    ports:
-      - "8085:8085"
+    expose:
+      - "8085"
     depends_on:
       - config-server
       - postgres
@@ -388,8 +423,8 @@ services:
       dockerfile: warranty-service/Dockerfile
     <<: *java-service-template
     container_name: warranty-service
-    ports:
-      - "8086:8086"
+    expose:
+      - "8086"
     depends_on:
       - config-server
       - postgres
@@ -409,8 +444,8 @@ services:
       dockerfile: notification-service/Dockerfile
     <<: *java-service-template
     container_name: notification-service
-    ports:
-      - "8087:8087"
+    expose:
+      - "8087"
     depends_on:
       - config-server
       - postgres
@@ -437,8 +472,8 @@ services:
       dockerfile: blog-service/Dockerfile
     <<: *java-service-template
     container_name: blog-service
-    ports:
-      - "8088:8088"
+    expose:
+      - "8088"
     depends_on:
       - config-server
       - postgres
@@ -457,8 +492,8 @@ services:
       dockerfile: media-service/Dockerfile
     <<: *java-service-template
     container_name: media-service
-    ports:
-      - "8095:8090"
+    expose:
+      - "8090"
     depends_on:
       - config-server
     environment:
@@ -474,8 +509,8 @@ services:
       dockerfile: report-service/Dockerfile
     <<: *java-service-template
     container_name: report-service
-    ports:
-      - "8089:8089"
+    expose:
+      - "8089"
     depends_on:
       - config-server
       - postgres
@@ -496,8 +531,9 @@ services:
       context: ./frontend/admin
       dockerfile: Dockerfile
     container_name: admin-frontend
-    ports:
-      - "9000:80"
+    # Only expose internally - accessed via reverse proxy
+    expose:
+      - "80"
     depends_on:
       api-gateway:
         condition: service_healthy
@@ -510,8 +546,8 @@ services:
       context: ./frontend/dealer
       dockerfile: Dockerfile
     container_name: dealer-frontend
-    ports:
-      - "5174:80"
+    expose:
+      - "80"
     depends_on:
       api-gateway:
         condition: service_healthy
@@ -524,8 +560,8 @@ services:
       context: ./frontend/main
       dockerfile: Dockerfile
     container_name: main-frontend
-    ports:
-      - "3000:3000"
+    expose:
+      - "3000"
     depends_on:
       api-gateway:
         condition: service_healthy
@@ -545,6 +581,7 @@ volumes:
   kafka2_data:
   kafka3_data:
   maven-cache:
+  nginx-logs:
 
 networks:
   microservices-network:
