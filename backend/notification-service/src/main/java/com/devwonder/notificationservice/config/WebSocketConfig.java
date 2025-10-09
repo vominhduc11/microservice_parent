@@ -29,8 +29,16 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(@NonNull StompEndpointRegistry registry) {
         // Register SockJS endpoint with WebSocket fallback
+        // Direct connection via reverse proxy (not through API Gateway)
         registry.addEndpoint("/ws")
-                .setAllowedOriginPatterns("http://4thitek.vn:9000")
+                .setAllowedOriginPatterns(
+                    "https://4thitek.vn",
+                    "https://www.4thitek.vn",
+                    "https://admin.4thitek.vn",
+                    "https://dealer.4thitek.vn",
+                    "http://localhost:*",  // For local development
+                    "http://127.0.0.1:*"   // For local development
+                )
                 .withSockJS();
     }
 

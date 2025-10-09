@@ -2,8 +2,8 @@ import { BlogCreateRequest, BlogFormData, BlogIntroductionItem, BlogApiResponse,
 import { logger } from '../utils/logger';
 import { env } from '../config/env';
 
-// Empty base URL for nginx proxy to work (endpoints already have /api prefix)
-const API_BASE_URL = '';
+// Use API base URL from environment config
+const API_BASE_URL = env.apiUrl;
 
 export class ApiError extends Error {
   public statusCode: number;
