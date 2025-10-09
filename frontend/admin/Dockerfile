@@ -12,8 +12,10 @@ RUN npm ci
 # Copy source code
 COPY . .
 
-# Set environment variables for build (empty = use relative paths from code)
-ENV VITE_API_URL=
+# Set production environment variables for build
+ENV VITE_API_URL=https://api.4thitek.vn
+ENV VITE_WS_URL=https://ws.4thitek.vn
+ENV VITE_APP_ENV=production
 
 # Build the application
 RUN npm run build

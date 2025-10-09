@@ -19,8 +19,8 @@ COPY --from=deps /app/node_modules ./node_modules
 # Copy source code
 COPY . .
 
-# Set environment variables for build
-ENV NEXT_PUBLIC_API_BASE_URL=/api
+# Set production environment variables for build
+ENV NEXT_PUBLIC_API_BASE_URL=https://api.4thitek.vn
 
 # Build the Next.js application
 RUN npm run build
