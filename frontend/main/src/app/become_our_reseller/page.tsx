@@ -15,6 +15,7 @@ import { motion } from 'framer-motion';
 import { TIMEOUTS } from '@/constants/timeouts';
 import debounce from 'lodash.debounce';
 import { ultraWideSpacing } from '@/styles/typography';
+import { API_BASE_URL } from '@/constants/api';
 
 interface FormData {
     name: string;
@@ -541,7 +542,7 @@ export default function BecomeOurReseller() {
 
         try {
             // Submit reseller application via API
-            import { API_BASE_URL } from '@/constants/api';
+
 
 const apiUrl = `${API_BASE_URL}/user/dealer`;
             

@@ -1,4 +1,5 @@
 import axios, { AxiosResponse, AxiosError } from 'axios';
+import { TIMEOUTS } from '@/constants/timeouts';
 import { API_BASE_URL } from '@/constants/api';
 // import { API_ENDPOINTS, API_DEFAULTS, DEFAULT_HEADERS } from '@/constants/api';
 import { BlogPost } from '@/types/blog';
@@ -155,7 +156,8 @@ class ApiService {
         };
     }
 
-    // Specific method for fetching resellers with retry logic
+    async fetchResellers(): Promise<ApiResponse<unknown[]>> {
+        return this.withRetry(
             () => axios.get(`${API_BASE_URL}/user/dealer`, {
                 timeout: TIMEOUTS.GEOCODING_REQUEST,
                 headers: {
