@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { DollarSign, TrendingUp, Calendar, RefreshCw, CheckCircle, Clock, ArrowUpRight, ArrowDownRight, BarChart3, ShoppingBag, Users, Crown, Package, AlertTriangle, TrendingDown, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,6 +8,7 @@ import { RevenueChart } from "./shared/RevenueChart";
 import { DateRangePicker } from "./DateRangePicker";
 import { useBusinessMetrics } from "@/hooks/useBusinessMetrics";
 import { startOfMonth, endOfMonth } from "date-fns";
+import { containerVariants, itemVariants, gridContainerVariants, gridItemVariants, fadeInUpVariants } from "@/utils/animations";
 
 export function Dashboard() {
   const [dateRange, setDateRange] = useState({
@@ -92,61 +94,80 @@ export function Dashboard() {
           <h2 className="text-xl font-semibold text-foreground">Chỉ số kinh doanh chính</h2>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-          <StatsCard
-            title="Doanh thu hôm nay"
-            value={new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(metrics.todayRevenue)}
-            change={{
-              value: `${metrics.todayRevenueGrowth > 0 ? '+' : ''}${metrics.todayRevenueGrowth}%`,
-              isPositive: metrics.todayRevenueGrowth > 0,
-              label: "so với hôm qua"
-            }}
-            icon={DollarSign}
-            iconColor="text-green-600"
-          />
+        <motion.div
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6"
+          variants={gridContainerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <motion.div variants={gridItemVariants}>
+            <StatsCard
+              title="Doanh thu hôm nay"
+              value={new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(metrics.todayRevenue)}
+              change={{
+                value: `${metrics.todayRevenueGrowth > 0 ? '+' : ''}${metrics.todayRevenueGrowth}%`,
+                isPositive: metrics.todayRevenueGrowth > 0,
+                label: "so với hôm qua"
+              }}
+              icon={DollarSign}
+              iconColor="text-green-600"
+            />
+          </motion.div>
 
-          <StatsCard
-            title="Đơn hàng hoàn thành"
-            value={metrics.completedOrders.toString()}
-            change={{
-              value: `${metrics.todayOrders}`,
-              isPositive: true,
-              label: "tổng đơn hôm nay"
-            }}
-            icon={CheckCircle}
-            iconColor="text-blue-600"
-          />
+          <motion.div variants={gridItemVariants}>
+            <StatsCard
+              title="Đơn hàng hoàn thành"
+              value={metrics.completedOrders.toString()}
+              change={{
+                value: `${metrics.todayOrders}`,
+                isPositive: true,
+                label: "tổng đơn hôm nay"
+              }}
+              icon={CheckCircle}
+              iconColor="text-blue-600"
+            />
+          </motion.div>
 
-          <StatsCard
-            title="Đại lý tháng này"
-            value={dashboardData?.data.kpiMetrics.monthDealers?.value?.toString() || metrics.monthCustomers.toString()}
-            change={{
-              value: `${(dashboardData?.data.kpiMetrics.monthDealers?.growth || metrics.monthCustomersGrowth) > 0 ? '+' : ''}${dashboardData?.data.kpiMetrics.monthDealers?.growth || metrics.monthCustomersGrowth}%`,
-              isPositive: (dashboardData?.data.kpiMetrics.monthDealers?.growth || metrics.monthCustomersGrowth) > 0,
-              label: dashboardData?.data.kpiMetrics.monthDealers?.comparison || "so với tháng trước"
-            }}
-            icon={Users}
-            iconColor="text-purple-600"
-          />
+          <motion.div variants={gridItemVariants}>
+            <StatsCard
+              title="Đại lý tháng này"
+              value={dashboardData?.data.kpiMetrics.monthDealers?.value?.toString() || metrics.monthCustomers.toString()}
+              change={{
+                value: `${(dashboardData?.data.kpiMetrics.monthDealers?.growth || metrics.monthCustomersGrowth) > 0 ? '+' : ''}${dashboardData?.data.kpiMetrics.monthDealers?.growth || metrics.monthCustomersGrowth}%`,
+                isPositive: (dashboardData?.data.kpiMetrics.monthDealers?.growth || metrics.monthCustomersGrowth) > 0,
+                label: dashboardData?.data.kpiMetrics.monthDealers?.comparison || "so với tháng trước"
+              }}
+              icon={Users}
+              iconColor="text-purple-600"
+            />
+          </motion.div>
 
-          <StatsCard
-            title="Sản phẩm sắp hết"
-            value={metrics.lowStockProducts.toString()}
-            change={{
-              value: `${metrics.totalProducts}`,
-              isPositive: false,
-              label: "tổng sản phẩm"
-            }}
-            icon={AlertTriangle}
-            iconColor="text-red-600"
-          />
-        </div>
+          <motion.div variants={gridItemVariants}>
+            <StatsCard
+              title="Sản phẩm sắp hết"
+              value={metrics.lowStockProducts.toString()}
+              change={{
+                value: `${metrics.totalProducts}`,
+                isPositive: false,
+                label: "tổng sản phẩm"
+              }}
+              icon={AlertTriangle}
+              iconColor="text-red-600"
+            />
+          </motion.div>
+        </motion.div>
       </div>
 
       {/* Critical Alerts & Top Performers */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+      <motion.div
+        className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6"
+        variants={gridContainerVariants}
+        initial="hidden"
+        animate="visible"
+      >
         {/* Critical Inventory Summary */}
-        <Card>
+        <motion.div variants={gridItemVariants}>
+          <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <AlertTriangle className="h-5 w-5 text-red-600" />
@@ -179,9 +200,11 @@ export function Dashboard() {
             </div>
           </CardContent>
         </Card>
+        </motion.div>
 
         {/* Top Performers Quick View */}
-        <Card>
+        <motion.div variants={gridItemVariants}>
+          <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Award className="h-5 w-5 text-yellow-600" />
@@ -236,7 +259,8 @@ export function Dashboard() {
             </div>
           </CardContent>
         </Card>
-      </div>
+        </motion.div>
+      </motion.div>
 
 
       {/* Charts Section - Simplified */}
@@ -246,34 +270,49 @@ export function Dashboard() {
           <h2 className="text-xl font-semibold text-foreground">Biểu đồ xu hướng</h2>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
-          <RevenueChart
-            title="Xu hướng doanh thu"
-            data={comparisonData}
-            type="bar"
-            dataKey="current"
-            color="#2563eb"
-            height={300}
-            showDataLabels={true}
-          />
+        <motion.div
+          className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6"
+          variants={gridContainerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <motion.div variants={gridItemVariants}>
+            <RevenueChart
+              title="Xu hướng doanh thu"
+              data={comparisonData}
+              type="bar"
+              dataKey="current"
+              color="#2563eb"
+              height={300}
+              showDataLabels={true}
+            />
+          </motion.div>
 
-          <RevenueChart
-            title="Tăng trưởng doanh thu (%)"
-            data={growthData}
-            type="line"
-            dataKey="growth"
-            color="#059669"
-            height={300}
-            showDataLabels={true}
-          />
-        </div>
+          <motion.div variants={gridItemVariants}>
+            <RevenueChart
+              title="Tăng trưởng doanh thu (%)"
+              data={growthData}
+              type="line"
+              dataKey="growth"
+              color="#059669"
+              height={300}
+              showDataLabels={true}
+            />
+          </motion.div>
+        </motion.div>
 
       </div>
 
       {/* Top Customers & Products - Final Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+      <motion.div
+        className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6"
+        variants={gridContainerVariants}
+        initial="hidden"
+        animate="visible"
+      >
         {/* Top Customers List */}
-        <Card>
+        <motion.div variants={gridItemVariants}>
+          <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Crown className="h-5 w-5 text-yellow-600" />
@@ -302,9 +341,11 @@ export function Dashboard() {
             </div>
           </CardContent>
         </Card>
+        </motion.div>
 
         {/* Top Products List */}
-        <Card>
+        <motion.div variants={gridItemVariants}>
+          <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Award className="h-5 w-5 text-yellow-600" />
@@ -345,7 +386,8 @@ export function Dashboard() {
             </div>
           </CardContent>
         </Card>
-      </div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 }

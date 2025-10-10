@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -45,6 +46,7 @@ import { apiRequest, productApi } from "@/services/api";
 import * as XLSX from 'xlsx';
 import { DEFAULT_ITEMS_PER_PAGE } from "@/constants/business";
 import { useDebounce } from "@/hooks/useDebounce";
+import { gridContainerVariants, gridItemVariants, containerVariants, itemVariants } from "@/utils/animations";
 
 const ITEMS_PER_PAGE = DEFAULT_ITEMS_PER_PAGE;
 
@@ -903,8 +905,14 @@ export function ProductsPage() {
 
       {/* Enhanced Stats Cards */}
       {totalProducts > 0 && viewMode === "active" && (
-        <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
-        <Card>
+        <motion.div
+          className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6"
+          variants={gridContainerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+        <motion.div variants={gridItemVariants}>
+          <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Tổng sản phẩm</CardTitle>
           </CardHeader>

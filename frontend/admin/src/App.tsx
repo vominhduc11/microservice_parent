@@ -73,23 +73,33 @@ function App() {
                   <AppSidebar />
                   <SidebarInset>
                     <Header />
-                    <main className="flex-1 overflow-x-hidden overflow-y-auto bg-muted/30 p-3 sm:p-4 md:p-6 xl:p-8 3xl:p-10">
-                      <div className="max-w-none 5xl:max-w-[calc(100vw-20rem)]">
-                      <Routes>
-                        <Route path="/" element={<Dashboard />} />
-                        <Route path="/products" element={<ProductsPage />} />
-                        <Route path="/orders" element={<OrdersPage />} />
-                        <Route path="/customers" element={<CustomersPage />} />
-                        <Route path="/reports" element={<ReportsPage />} />
-                        <Route path="/blogs" element={<BlogsPage />} />
-                        <Route path="/admins" element={
-                          <RoleProtectedRoute requiredRole="SYSTEM">
-                            <AdminManagementPage />
-                          </RoleProtectedRoute>
-                        } />
-                        <Route path="/notifications" element={<NotificationsPage />} />
-                        <Route path="/settings" element={<SettingsPage />} />
-                      </Routes>
+                    <main className="flex-1 overflow-x-hidden overflow-y-auto bg-muted/30 p-3 sm:p-4 md:p-6 xl:p-8">
+                      <div className="max-w-none 2xl:max-w-[calc(100vw-20rem)]">
+                        <AnimatePresence mode="wait">
+                          <motion.div
+                            key={location.pathname}
+                            variants={pageVariants}
+                            initial="initial"
+                            animate="animate"
+                            exit="exit"
+                          >
+                            <Routes location={location}>
+                              <Route path="/" element={<Dashboard />} />
+                              <Route path="/products" element={<ProductsPage />} />
+                              <Route path="/orders" element={<OrdersPage />} />
+                              <Route path="/customers" element={<CustomersPage />} />
+                              <Route path="/reports" element={<ReportsPage />} />
+                              <Route path="/blogs" element={<BlogsPage />} />
+                              <Route path="/admins" element={
+                                <RoleProtectedRoute requiredRole="SYSTEM">
+                                  <AdminManagementPage />
+                                </RoleProtectedRoute>
+                              } />
+                              <Route path="/notifications" element={<NotificationsPage />} />
+                              <Route path="/settings" element={<SettingsPage />} />
+                            </Routes>
+                          </motion.div>
+                        </AnimatePresence>
                       </div>
                     </main>
                   </SidebarInset>
