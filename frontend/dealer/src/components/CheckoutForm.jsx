@@ -100,7 +100,7 @@ const CheckoutForm = ({ cart, totalAmount, onPaymentLater, onPaymentNow }) => {
   const finalTotal = totalAmount + totalAmount * 0.1
 
   return (
-    <div className="pt-[70px] xl:pt-[80px] 2xl:pt-[90px] 3xl:pt-[100px] 4xl:pt-[120px] 5xl:pt-[140px] pb-20 md:pb-5 max-w-screen-5xl mx-auto px-4 sm:px-5 md:px-6 lg:px-8 xl:px-10 2xl:px-12 3xl:px-16 4xl:px-20 5xl:px-24">
+    <div className="pt-[70px] xl:pt-[80px] 2xl:pt-[90px] pb-20 md:pb-5 max-w-screen-5xl mx-auto px-4 sm:px-5 md:px-6 lg:px-8 xl:px-10 2xl:px-12">
       <div className="mb-6 md:mb-8">
         <h1 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">
           💳 Thanh toán đơn hàng

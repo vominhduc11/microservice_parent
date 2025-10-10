@@ -43,7 +43,7 @@ const Cart = ({ cart, onUpdateItem, onRemoveItem, onCheckout, totalAmount, isLoa
 
   if (cart.length === 0) {
     return (
-      <div className="pt-[70px] xl:pt-[80px] 2xl:pt-[90px] 3xl:pt-[100px] 4xl:pt-[120px] 5xl:pt-[140px] pb-20 md:pb-5 max-w-screen-5xl mx-auto px-4 sm:px-5 md:px-6 lg:px-8 xl:px-10 2xl:px-12 3xl:px-16 4xl:px-20 5xl:px-24">
+      <div className="pt-[70px] xl:pt-[80px] 2xl:pt-[90px] pb-20 md:pb-5 max-w-screen-5xl mx-auto px-4 sm:px-5 md:px-6 lg:px-8 xl:px-10 2xl:px-12">
         <div className="flex flex-col items-center justify-center py-16 text-center">
           <div className="text-8xl mb-6">🛒</div>
           <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">Giỏ hàng của bạn đang trống</h2>
@@ -60,7 +60,7 @@ const Cart = ({ cart, onUpdateItem, onRemoveItem, onCheckout, totalAmount, isLoa
   }
 
   return (
-    <div className="pt-[70px] xl:pt-[80px] 2xl:pt-[90px] 3xl:pt-[100px] 4xl:pt-[120px] 5xl:pt-[140px] pb-20 md:pb-5 max-w-screen-5xl mx-auto px-4 sm:px-5 md:px-6 lg:px-8 xl:px-10 2xl:px-12 3xl:px-16 4xl:px-20 5xl:px-24">
+    <div className="pt-[70px] xl:pt-[80px] 2xl:pt-[90px] pb-20 md:pb-5 max-w-screen-5xl mx-auto px-4 sm:px-5 md:px-6 lg:px-8 xl:px-10 2xl:px-12">
       <div className="mb-6">
         <h1 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">
           Giỏ hàng ({cart.length} sản phẩm)

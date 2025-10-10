@@ -121,7 +121,7 @@ const ProductDetailPage = () => {
 
   if (loading) {
     return (
-      <div className="pt-[70px] xl:pt-[80px] 2xl:pt-[90px] 3xl:pt-[100px] 4xl:pt-[120px] 5xl:pt-[140px] pb-5 max-w-screen-5xl mx-auto px-4">
+      <div className="pt-[70px] xl:pt-[80px] 2xl:pt-[90px] pb-5 max-w-screen-5xl mx-auto px-4">
         <div className="flex justify-center items-center py-20">
           <div className="text-lg">Đang tải...</div>
         </div>
@@ -131,7 +131,7 @@ const ProductDetailPage = () => {
 
   if (error) {
     return (
-      <div className="pt-[70px] xl:pt-[80px] 2xl:pt-[90px] 3xl:pt-[100px] 4xl:pt-[120px] 5xl:pt-[140px] pb-5 max-w-screen-5xl mx-auto px-4">
+      <div className="pt-[70px] xl:pt-[80px] 2xl:pt-[90px] pb-5 max-w-screen-5xl mx-auto px-4">
         <div className="flex flex-col items-center py-20">
           <div className="text-lg text-red-500 mb-4">{error}</div>
           <button

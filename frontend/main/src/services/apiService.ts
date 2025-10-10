@@ -1,5 +1,5 @@
 import axios, { AxiosResponse, AxiosError } from 'axios';
-import { TIMEOUTS } from '@/constants/timeouts';
+import { API_BASE_URL } from '@/constants/api';
 // import { API_ENDPOINTS, API_DEFAULTS, DEFAULT_HEADERS } from '@/constants/api';
 import { BlogPost } from '@/types/blog';
 import { WarrantyCheckResponse } from '@/types/warranty';
@@ -156,9 +156,7 @@ class ApiService {
     }
 
     // Specific method for fetching resellers with retry logic
-    async fetchResellers(): Promise<ApiResponse<unknown[]>> {
-        return this.withRetry(
-            () => axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/user/dealer`, {
+            () => axios.get(`${API_BASE_URL}/user/dealer`, {
                 timeout: TIMEOUTS.GEOCODING_REQUEST,
                 headers: {
                     'Accept': 'application/json',
@@ -205,7 +203,7 @@ class ApiService {
     async healthCheck(): Promise<boolean> {
         try {
             const response = await this.withRetry(
-                () => axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/health`, {
+                () => axios.get(`${API_BASE_URL}/health`, {
                     timeout: 5000
                 }),
                 {
@@ -223,7 +221,7 @@ class ApiService {
     // Dealer API methods
     async fetchDealers(): Promise<ApiResponse<unknown[]>> {
         return this.withRetry(
-            () => axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/user/dealer`, {
+            () => axios.get(`${API_BASE_URL}/user/dealer`, {
                 timeout: TIMEOUTS.GEOCODING_REQUEST,
                 headers: {
                     'Accept': 'application/json',
@@ -243,7 +241,7 @@ class ApiService {
     async fetchBlogs(fields?: string): Promise<ApiResponse<BlogPost[]>> {
         const queryParams = fields ? `?fields=${fields}` : '';
         return this.withRetry(
-            () => axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/blog/blogs${queryParams}`, {
+            () => axios.get(`${API_BASE_URL}/blog/blogs${queryParams}`, {
                 timeout: TIMEOUTS.GEOCODING_REQUEST,
                 headers: {
                     'Accept': 'application/json',
@@ -260,7 +258,7 @@ class ApiService {
 
     async fetchBlogById(id: string): Promise<ApiResponse<BlogDetailResponse['data']>> {
         return this.withRetry(
-            () => axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/blog/${id}`, {
+            () => axios.get(`${API_BASE_URL}/blog/${id}`, {
                 timeout: TIMEOUTS.GEOCODING_REQUEST,
                 headers: {
                     'Accept': 'application/json',
@@ -278,7 +276,7 @@ class ApiService {
     // Product API methods
     async fetchHomepageProducts(): Promise<ApiResponse<ProductListResponse['data']>> {
         return this.withRetry(
-            () => axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/product/products/homepage?limit=4&fields=id%2Cname%2CshortDescription%2Cimage`, {
+            () => axios.get(`${API_BASE_URL}/product/products/homepage?limit=4&fields=id%2Cname%2CshortDescription%2Cimage`, {
                 timeout: TIMEOUTS.GEOCODING_REQUEST,
                 headers: {
                     'Accept': 'application/json',
@@ -295,7 +293,7 @@ class ApiService {
 
     async fetchProducts(): Promise<ApiResponse<ProductListResponse['data']>> {
         return this.withRetry(
-            () => axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/product/products?fields=id%2Cname%2CshortDescription%2Cimage`, {
+            () => axios.get(`${API_BASE_URL}/product/products?fields=id%2Cname%2CshortDescription%2Cimage`, {
                 timeout: TIMEOUTS.GEOCODING_REQUEST,
                 headers: {
                     'Accept': 'application/json',
@@ -312,7 +310,7 @@ class ApiService {
 
     async fetchHomepageBlogs(): Promise<ApiResponse<BlogListResponse['data']>> {
         return this.withRetry(
-            () => axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/blog/blogs/homepage?limit=6&fields=id%2Ctitle%2Cdescription%2Cimage%2Ccategory%2CcreatedAt`, {
+            () => axios.get(`${API_BASE_URL}/blog/blogs/homepage?limit=6&fields=id%2Ctitle%2Cdescription%2Cimage%2Ccategory%2CcreatedAt`, {
                 timeout: TIMEOUTS.GEOCODING_REQUEST,
                 headers: {
                     'Accept': 'application/json',
@@ -329,7 +327,7 @@ class ApiService {
 
     async fetchBlogCategories(): Promise<ApiResponse<BlogCategory[]>> {
         return this.withRetry(
-            () => axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/blog/categories`, {
+            () => axios.get(`${API_BASE_URL}/blog/categories`, {
                 timeout: TIMEOUTS.GEOCODING_REQUEST,
                 headers: {
                     'Accept': 'application/json',
@@ -347,7 +345,7 @@ class ApiService {
     async fetchBlogsByCategory(categoryId: number, fields?: string): Promise<ApiResponse<unknown[]>> {
         const queryParams = fields ? `?fields=${fields}` : '';
         return this.withRetry(
-            () => axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/blog/categories/${categoryId}/blogs${queryParams}`, {
+            () => axios.get(`${API_BASE_URL}/blog/categories/${categoryId}/blogs${queryParams}`, {
                 timeout: TIMEOUTS.GEOCODING_REQUEST,
                 headers: {
                     'Accept': 'application/json',
@@ -370,7 +368,7 @@ class ApiService {
         }
 
         return this.withRetry(
-            () => axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/blog/blogs/related/${blogId}?${queryParams.toString()}`, {
+            () => axios.get(`${API_BASE_URL}/blog/blogs/related/${blogId}?${queryParams.toString()}`, {
                 timeout: TIMEOUTS.GEOCODING_REQUEST,
                 headers: {
                     'Accept': 'application/json',
@@ -387,7 +385,7 @@ class ApiService {
 
     async fetchProductById(id: string): Promise<ApiResponse<ProductDetailResponse['data']>> {
         return this.withRetry(
-            () => axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/product/${id}`, {
+            () => axios.get(`${API_BASE_URL}/product/${id}`, {
                 timeout: TIMEOUTS.GEOCODING_REQUEST,
                 headers: {
                     'Accept': 'application/json',
@@ -404,7 +402,7 @@ class ApiService {
 
     async fetchRelatedProducts(productId: string, limit: number = 4): Promise<ApiResponse<unknown[]>> {
         return this.withRetry(
-            () => axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/product/products/related/${productId}?limit=${limit}&fields=id%2Cname%2CshortDescription%2Cimage%2Cprice`, {
+            () => axios.get(`${API_BASE_URL}/product/products/related/${productId}?limit=${limit}&fields=id%2Cname%2CshortDescription%2Cimage%2Cprice`, {
                 timeout: TIMEOUTS.GEOCODING_REQUEST,
                 headers: {
                     'Accept': 'application/json',
@@ -425,7 +423,7 @@ class ApiService {
     // Warranty API methods
     async checkWarranty(serialNumber: string): Promise<ApiResponse<WarrantyCheckResponse>> {
         return this.withRetry(
-            () => axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/warranty/check/${serialNumber}`, {
+            () => axios.get(`${API_BASE_URL}/warranty/check/${serialNumber}`, {
                 timeout: TIMEOUTS.GEOCODING_REQUEST,
                 headers: {
                     'Accept': 'application/json',
@@ -446,7 +444,7 @@ class ApiService {
         const fields = encodeURIComponent('id,name,shortDescription,image');
 
         return this.withRetry(
-            () => axios.get<{ id: number; name: string; shortDescription: string; image: string; }[]>(`${process.env.NEXT_PUBLIC_API_BASE_URL}/product/products/search?q=${encodedQuery}&limit=${limit}&fields=${fields}`, {
+            () => axios.get<{ id: number; name: string; shortDescription: string; image: string; }[]>(`${API_BASE_URL}/product/products/search?q=${encodedQuery}&limit=${limit}&fields=${fields}`, {
                 timeout: TIMEOUTS.GEOCODING_REQUEST,
                 headers: {
                     'Accept': 'application/json',
@@ -466,7 +464,7 @@ class ApiService {
         const fields = encodeURIComponent('id,title,description,image,category');
 
         return this.withRetry(
-            () => axios.get<{ id: number; title: string; description: string; image: string; category: string; }[]>(`${process.env.NEXT_PUBLIC_API_BASE_URL}/blog/blogs/search?q=${encodedQuery}&limit=${limit}&fields=${fields}`, {
+            () => axios.get<{ id: number; title: string; description: string; image: string; category: string; }[]>(`${API_BASE_URL}/blog/blogs/search?q=${encodedQuery}&limit=${limit}&fields=${fields}`, {
                 timeout: TIMEOUTS.GEOCODING_REQUEST,
                 headers: {
                     'Accept': 'application/json',

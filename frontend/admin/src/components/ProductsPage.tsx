@@ -913,60 +913,71 @@ export function ProductsPage() {
         >
         <motion.div variants={gridItemVariants}>
           <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Tổng sản phẩm</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{totalProducts}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Đang bán</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600 dark:text-green-400">{activeProducts}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Nổi bật</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{featuredProducts}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Hết hàng</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-red-600 dark:text-red-400">{outOfStockProducts}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Sắp hết</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">{lowStockProducts}</div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">≤ 10 sản phẩm</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Giá trị kho</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-lg font-bold text-blue-600 dark:text-blue-400">
-              {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', notation: 'compact', compactDisplay: 'short' }).format(totalInventoryValue)}
-            </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              TB: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', notation: 'compact', compactDisplay: 'short' }).format(avgProductValue)}
-            </p>
-          </CardContent>
-        </Card>
-        </div>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Tổng sản phẩm</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{totalProducts}</div>
+            </CardContent>
+          </Card>
+        </motion.div>
+        <motion.div variants={gridItemVariants}>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Đang bán</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-green-600 dark:text-green-400">{activeProducts}</div>
+            </CardContent>
+          </Card>
+        </motion.div>
+        <motion.div variants={gridItemVariants}>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Nổi bật</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{featuredProducts}</div>
+            </CardContent>
+          </Card>
+        </motion.div>
+        <motion.div variants={gridItemVariants}>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Hết hàng</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-red-600 dark:text-red-400">{outOfStockProducts}</div>
+            </CardContent>
+          </Card>
+        </motion.div>
+        <motion.div variants={gridItemVariants}>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Sắp hết</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">{lowStockProducts}</div>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">≤ 10 sản phẩm</p>
+            </CardContent>
+          </Card>
+        </motion.div>
+        <motion.div variants={gridItemVariants}>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Giá trị kho</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-lg font-bold text-blue-600 dark:text-blue-400">
+                {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', notation: 'compact', compactDisplay: 'short' }).format(totalInventoryValue)}
+              </div>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                TB: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', notation: 'compact', compactDisplay: 'short' }).format(avgProductValue)}
+              </p>
+            </CardContent>
+          </Card>
+        </motion.div>
+        </motion.div>
       )}
 
       {/* Search and Filters */}

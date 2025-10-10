@@ -35,8 +35,8 @@ const Breadcrumb = () => {
   if (pathnames.length === 0) return null
 
   return (
-    <nav className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-b border-slate-200 dark:border-slate-700 py-3 sticky top-[70px] xl:top-[80px] 2xl:top-[90px] 3xl:top-[100px] 4xl:top-[120px] 5xl:top-[140px] z-40">
-      <div className="max-w-screen-5xl mx-auto px-4 sm:px-5 md:px-6 lg:px-8 xl:px-10 2xl:px-12 3xl:px-16 4xl:px-20 5xl:px-24">
+    <nav className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-b border-slate-200 dark:border-slate-700 py-3 sticky top-[70px] xl:top-[80px] 2xl:top-[90px] z-40">
+      <div className="max-w-screen-5xl mx-auto px-4 sm:px-5 md:px-6 lg:px-8 xl:px-10 2xl:px-12">
         <ol className="flex items-center space-x-2 text-sm">
           {/* Home breadcrumb */}
           <li>
