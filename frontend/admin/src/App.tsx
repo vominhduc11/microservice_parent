@@ -1,8 +1,10 @@
 
 import { useState } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Toaster } from "@/components/ui/sonner";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
+import { pageVariants } from '@/utils/animations';
 
 import { useAuth } from "@/contexts/AuthContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
@@ -24,6 +26,7 @@ import { AppSidebar } from "./components/AppSidebar";
 
 function App() {
   const { isAuthenticated, isInitializing, user } = useAuth();
+  const location = useLocation();
 
   const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     if (isInitializing) {

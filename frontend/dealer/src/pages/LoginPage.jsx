@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import PropTypes from 'prop-types'
 import { authAPI, handleAPIError } from '../services/api'
 import { Music, Lock, User, AlertCircle, LogIn, Mail, Eye, EyeOff, CheckCircle, ArrowLeft } from 'lucide-react'
+import { fadeInDownVariants, fadeInUpVariants, scaleInVariants } from '../utils/animations'
 
 const LoginPage = ({ onLogin }) => {
   const navigate = useNavigate()
@@ -99,28 +101,44 @@ const LoginPage = ({ onLogin }) => {
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: 'url(/pexels-padrinan-255379.jpg)' }}
       >
-        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/50 to-black/60 backdrop-blur-sm"></div>
       </div>
 
       {/* Content */}
-      <div className="w-full max-w-md relative z-10">
+      <motion.div
+        className="w-full max-w-md relative z-10"
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5, ease: [0.6, -0.05, 0.01, 0.99] }}
+      >
         {/* Login Card */}
-        <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-md rounded-2xl shadow-2xl p-6">
+        <div className="bg-white/98 dark:bg-slate-800/98 backdrop-blur-xl rounded-3xl shadow-2xl p-8 border border-white/20 dark:border-slate-700/50">
           {/* Logo & Title Section */}
-          <div className="text-center mb-6 animate-fade-in-down">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-primary-500 to-primary-700 mb-3 shadow-lg">
+          <motion.div
+            className="text-center mb-8"
+            variants={fadeInDownVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-500 to-primary-700 dark:from-primary-400 dark:to-primary-600 mb-4 shadow-lg shadow-primary-500/30">
               <Music className="w-8 h-8 text-white" strokeWidth={2.5} />
             </div>
-            <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-primary-600 to-primary-800 dark:from-primary-400 dark:to-primary-600 bg-clip-text text-transparent mb-1">
-              TuneZone Dealer
+            <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
+              TuneZone <span className="text-primary-600 dark:text-primary-400">Dealer</span>
             </h1>
-            <p className="text-sm text-slate-600 dark:text-slate-400 font-medium">
+            <p className="text-sm text-slate-600 dark:text-slate-400">
               Đăng nhập để truy cập hệ thống quản lý
             </p>
-          </div>
+          </motion.div>
 
           {/* Login Form */}
-          <form onSubmit={handleSubmit} className="space-y-4 animate-fade-in-up">
+          <motion.form
+            onSubmit={handleSubmit}
+            className="space-y-4"
+            variants={fadeInUpVariants}
+            initial="hidden"
+            animate="visible"
+          >
             {/* Username Field */}
             <div className="group">
               <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
@@ -287,14 +305,16 @@ const LoginPage = ({ onLogin }) => {
             )}
 
             {/* Submit Button */}
-            <button
+            <motion.button
               type="submit"
               disabled={isLoading}
-              className="w-full flex items-center justify-center gap-2 px-6 py-2.5 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-semibold text-base rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-lg"
+              className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-semibold text-base rounded-xl shadow-soft hover:shadow-soft-lg transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
+              whileHover={{ scale: 1.02, y: -2 }}
+              whileTap={{ scale: 0.98 }}
             >
               {isLoading ? (
                 <>
-                  <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
@@ -302,21 +322,21 @@ const LoginPage = ({ onLogin }) => {
                 </>
               ) : (
                 <>
-                  <LogIn className="w-4 h-4" />
+                  <LogIn className="w-5 h-5" />
                   <span>Đăng nhập</span>
                 </>
               )}
-            </button>
-          </form>
+            </motion.button>
+          </motion.form>
 
           {/* Footer Note */}
-          <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+          <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700">
             <p className="text-xs text-center text-slate-500 dark:text-slate-400">
               © 2024 TuneZone. All rights reserved.
             </p>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Inline Styles for Animations */}
       <style>{`

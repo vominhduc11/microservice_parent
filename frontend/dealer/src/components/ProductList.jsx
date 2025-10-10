@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react'
+import { motion } from 'framer-motion'
 import { ProductGridSkeleton, LazyImage } from './LoadingStates'
 import { NetworkError, EmptyState } from './ErrorHandling'
 import QuickViewModal from './QuickViewModal'
@@ -7,6 +8,7 @@ import ProductFilters from './ProductFilters'
 import { useNavigate } from 'react-router-dom'
 import { productsAPI, handleAPIError } from '../services/api'
 import { Smartphone, Filter, Eye, X, RotateCcw } from 'lucide-react'
+import { containerVariants, itemVariants, cardHoverVariants } from '../utils/animations'
 
 // Helper function to parse image JSON string
 const parseImageUrl = (imageStr) => {
@@ -235,7 +237,7 @@ const ProductList = ({ onProductClick }) => {
 
   if (error) {
     return (
-      <div className="pt-[70px] xl:pt-[80px] 2xl:pt-[90px] 3xl:pt-[100px] 4xl:pt-[120px] 5xl:pt-[140px] pb-5 max-w-screen-5xl mx-auto px-4">
+      <div className="pt-16 md:pt-18 lg:pt-20 pb-8 max-w-7xl mx-auto px-4">
         <NetworkError onRetry={handleRetry} message={error} />
       </div>
     )
@@ -243,30 +245,32 @@ const ProductList = ({ onProductClick }) => {
 
 
   return (
-    <div className="pt-[70px] sm:pt-[75px] md:pt-[80px] lg:pt-[85px] xl:pt-[90px] 2xl:pt-[95px] 3xl:pt-[100px] 4xl:pt-[120px] 5xl:pt-[140px] pb-5 sm:pb-6 md:pb-8 lg:pb-10 xl:pb-12 2xl:pb-14 3xl:pb-16 4xl:pb-20 5xl:pb-24 max-w-screen-5xl mx-auto px-0">
+    <div className="pt-16 md:pt-18 lg:pt-20 pb-8 max-w-7xl mx-auto px-0">
       {/* Header */}
-      <div className="mb-4 sm:mb-5 md:mb-6 lg:mb-7 xl:mb-8 2xl:mb-10 3xl:mb-12 4xl:mb-14 5xl:mb-16 py-4 sm:py-5 md:py-6 lg:py-6 xl:py-7 2xl:py-8 3xl:py-9 4xl:py-10 5xl:py-12 bg-slate-50 dark:bg-slate-800 sticky top-[70px] sm:top-[75px] md:top-[80px] lg:top-[85px] xl:top-[90px] 2xl:top-[95px] 3xl:top-[100px] 4xl:top-[120px] 5xl:top-[140px] z-10 border-b border-slate-200 dark:border-slate-700 transition-colors duration-300 shadow-sm">
-        <div className="flex items-center justify-between px-4 sm:px-5 md:px-6 lg:px-8 xl:px-10 2xl:px-12 3xl:px-16 4xl:px-20 5xl:px-24">
-          <h2 className="text-slate-900 dark:text-slate-100 text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-3xl 2xl:text-4xl 3xl:text-5xl 4xl:text-6xl 5xl:text-7xl font-bold tracking-tight flex items-center gap-2">
-            <Smartphone className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 xl:w-9 xl:h-9 2xl:w-10 2xl:h-10 3xl:w-12 3xl:h-12 4xl:w-14 4xl:h-14 5xl:w-16 5xl:h-16" />
-            Sản Phẩm
-          </h2>
-          <div className="flex items-center gap-2 sm:gap-3 md:gap-3 lg:gap-4 xl:gap-4 2xl:gap-5 3xl:gap-6 4xl:gap-7 5xl:gap-8">
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className={`flex items-center gap-2 px-3 sm:px-4 md:px-4 lg:px-5 xl:px-5 2xl:px-6 3xl:px-7 4xl:px-8 5xl:px-10 py-1.5 sm:py-2 md:py-2 lg:py-2.5 xl:py-2.5 2xl:py-3 3xl:py-3.5 4xl:py-4 5xl:py-5 rounded-lg border transition-colors text-xs sm:text-sm md:text-sm lg:text-base xl:text-base 2xl:text-lg 3xl:text-xl 4xl:text-2xl 5xl:text-3xl ${
-                showFilters
-                  ? 'bg-primary-500 text-white border-primary-500'
-                  : 'bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-600'
-              }`}
-            >
-              <Filter className="w-4 h-4 sm:w-5 sm:h-5 md:w-5 md:h-5 lg:w-5 lg:h-5 xl:w-6 xl:h-6 2xl:w-6 2xl:h-6 3xl:w-7 3xl:h-7 4xl:w-8 4xl:h-8 5xl:w-10 5xl:h-10" />
-              <span className="hidden sm:inline">Bộ lọc</span>
-            </button>
-            <div className="text-[10px] sm:text-xs md:text-sm lg:text-sm xl:text-base 2xl:text-lg 3xl:text-xl 4xl:text-2xl 5xl:text-3xl text-slate-600 dark:text-slate-400">
-              {filteredProducts.length} sản phẩm
+      <div className="mb-6 py-6 bg-gradient-to-r from-slate-50 to-white dark:from-slate-800 dark:to-slate-900 sticky top-16 md:top-18 lg:top-20 z-10 border-b border-slate-200 dark:border-slate-800 transition-colors duration-300 shadow-sm backdrop-blur-sm bg-white/95 dark:bg-slate-900/95">
+        <div className="flex items-center justify-between px-4 md:px-6 lg:px-8">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 dark:from-primary-400 dark:to-primary-600 flex items-center justify-center shadow-md">
+              <Smartphone className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h2 className="text-slate-900 dark:text-slate-100 text-xl md:text-2xl lg:text-3xl font-bold tracking-tight">
+                Sản Phẩm
+              </h2>
+              <p className="text-sm text-slate-600 dark:text-slate-400">{filteredProducts.length} sản phẩm</p>
             </div>
           </div>
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border transition-all duration-200 text-sm font-medium shadow-sm hover:shadow-md ${
+              showFilters
+                ? 'bg-primary-600 text-white border-primary-600 shadow-primary-200 dark:shadow-primary-900/30'
+                : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700'
+            }`}
+          >
+            <Filter className="w-5 h-5" />
+            <span className="hidden sm:inline">Bộ lọc</span>
+          </button>
         </div>
       </div>
 
@@ -297,14 +301,16 @@ const ProductList = ({ onProductClick }) => {
           </div>
         )}
 
-        <div className="flex gap-6 px-4 sm:px-5 md:px-6 lg:px-8 xl:px-10 2xl:px-12 3xl:px-16 4xl:px-20 5xl:px-24">
+        <div className="flex gap-6 px-4 md:px-6 lg:px-8">
           {/* Desktop Filters Sidebar */}
           {showFilters && (
-            <aside className="hidden lg:block w-80 flex-shrink-0">
-              <ProductFilters 
-                onFiltersChange={handleFiltersChange}
-                totalProducts={products.length}
-              />
+            <aside className="hidden lg:block w-72 flex-shrink-0">
+              <div className="sticky top-32">
+                <ProductFilters
+                  onFiltersChange={handleFiltersChange}
+                  totalProducts={products.length}
+                />
+              </div>
             </aside>
           )}
 
@@ -314,54 +320,72 @@ const ProductList = ({ onProductClick }) => {
               <ProductGridSkeleton count={8} />
             ) : filteredProducts.length > 0 ? (
               <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 3xl:grid-cols-5 4xl:grid-cols-6 5xl:grid-cols-7 gap-3 sm:gap-4 md:gap-4 lg:gap-5 xl:gap-6 2xl:gap-6 3xl:gap-7 4xl:gap-8 5xl:gap-10 w-full">
-            {paginatedProducts.map((product, index) => (
-            <div
+                <motion.div
+                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-5 lg:gap-6 w-full"
+                  variants={containerVariants}
+                  initial="hidden"
+                  animate="visible"
+                >
+            {paginatedProducts.map((product) => (
+            <motion.div
               key={product.id}
-              className="bg-white dark:bg-slate-800 rounded-xl shadow-md hover:shadow-xl overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:scale-105 active:translate-y-0 active:scale-95 animate-fade-in-up group relative"
-              style={{ animationDelay: `${index * 0.1}s` }}
+              className="bg-white dark:bg-slate-800 rounded-2xl shadow-soft overflow-hidden cursor-pointer group relative border border-slate-200 dark:border-slate-700"
+              variants={itemVariants}
+              whileHover="hover"
+              whileTap="tap"
               onClick={() => onProductClick(product)}
             >
               {/* Quick View Button */}
               <button
                 onClick={(e) => handleQuickView(e, product)}
-                className="absolute top-3 left-3 z-10 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm text-slate-700 dark:text-slate-300 p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white dark:hover:bg-slate-700 hover:scale-110 shadow-lg"
+                className="absolute top-3 right-3 z-10 bg-white/95 dark:bg-slate-800/95 backdrop-blur-md text-slate-700 dark:text-slate-300 p-2.5 rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white dark:hover:bg-slate-700 hover:scale-110 shadow-md hover:shadow-lg"
                 title="Xem nhanh"
               >
                 <Eye className="w-5 h-5" />
               </button>
-              <div className="relative h-48 md:h-52 lg:h-48 overflow-hidden bg-white dark:bg-slate-700 border-b border-slate-100 dark:border-slate-600 flex items-center justify-center group">
+
+              <div className="relative h-52 overflow-hidden bg-slate-50 dark:bg-slate-700/50 flex items-center justify-center">
                 <LazyImage
                   src={product.image}
                   alt={product.name}
-                  className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105 bg-white dark:bg-slate-700"
-                  placeholder={<Smartphone className="w-16 h-16 text-slate-400" />}
+                  className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110 p-4"
+                  placeholder={<Smartphone className="w-16 h-16 text-slate-300 dark:text-slate-600" />}
                 />
                 {product.sku && !product.sku.startsWith('SCS-') && (
-                  <div className="absolute top-2.5 right-2.5 bg-primary-500/90 text-white px-2 py-1 text-xs rounded font-medium">
+                  <div className="absolute top-3 left-3 bg-primary-600/90 backdrop-blur-sm text-white px-2.5 py-1 text-xs rounded-lg font-medium shadow-md">
                     {product.sku}
                   </div>
                 )}
+                {product.stock <= 10 && product.stock > 0 && (
+                  <div className="absolute top-3 right-3 bg-warning-500/90 backdrop-blur-sm text-white px-2.5 py-1 text-xs rounded-lg font-medium shadow-md">
+                    Sắp hết
+                  </div>
+                )}
               </div>
-              <div className="p-4 md:p-5">
-                <h3 className="text-slate-900 dark:text-slate-100 text-lg md:text-xl font-semibold mb-2">{product.name}</h3>
+
+              <div className="p-5">
+                <h3 className="text-slate-900 dark:text-slate-100 text-base font-semibold mb-2 line-clamp-2 min-h-[3rem]">{product.name}</h3>
                 <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-4 line-clamp-2">{product.description}</p>
-                <div className="flex flex-col gap-1.5">
-                  {product.sku && !product.sku.startsWith('SCS-') && (
-                    <div className="text-slate-500 dark:text-slate-400 text-xs font-mono font-semibold">SKU: {product.sku}</div>
-                  )}
-                  <div className="text-primary-500 dark:text-primary-400 text-lg font-bold">{formatPrice(product.price)}</div>
-                  <div className="text-success-500 dark:text-success-400 text-xs">
-                    Còn lại: {product.stock} sản phẩm
+
+                <div className="space-y-2.5 pt-3 border-t border-slate-100 dark:border-slate-700">
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xl font-bold text-primary-600 dark:text-primary-400">{formatPrice(product.price)}</span>
                   </div>
-                  <div className="text-slate-500 dark:text-slate-400 text-xs">
-                    Bảo hành: {product.warranty} tháng
+
+                  <div className="flex items-center justify-between text-xs">
+                    <div className={`flex items-center gap-1.5 font-medium ${product.stock > 10 ? 'text-success-600 dark:text-success-400' : product.stock > 0 ? 'text-warning-600 dark:text-warning-400' : 'text-danger-600 dark:text-danger-400'}`}>
+                      <div className={`w-2 h-2 rounded-full ${product.stock > 10 ? 'bg-success-500' : product.stock > 0 ? 'bg-warning-500' : 'bg-danger-500'}`}></div>
+                      Còn {product.stock}
+                    </div>
+                    <div className="text-slate-500 dark:text-slate-400">
+                      BH: {product.warranty}th
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
-                </div>
+                </motion.div>
 
                 {/* Pagination */}
                 {totalPages > 1 && (

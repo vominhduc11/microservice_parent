@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useCart } from '../context/CartContext'
 import { LazyImage, LoadingButton } from './LoadingStates'
 import { useNotification } from './ToastNotification'
+import { modalVariants, overlayVariants } from '../utils/animations'
 
 const QuickViewModal = ({ product, isOpen, onClose, onViewDetails }) => {
   const [quantity, setQuantity] = useState(1)
@@ -93,14 +95,25 @@ const QuickViewModal = ({ product, isOpen, onClose, onViewDetails }) => {
     }
   }
 
-  if (!isOpen || !product) return null
-
   return (
-    <div 
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in"
-      onClick={handleBackdropClick}
-    >
-      <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden animate-fade-in-up">
+    <AnimatePresence>
+      {isOpen && product && (
+        <motion.div
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50"
+          onClick={handleBackdropClick}
+          variants={overlayVariants}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+        >
+          <motion.div
+            className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden"
+            variants={modalVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            onClick={(e) => e.stopPropagation()}
+          >
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-slate-200 dark:border-slate-700">
           <div className="flex items-center gap-3">
@@ -272,8 +285,10 @@ const QuickViewModal = ({ product, isOpen, onClose, onViewDetails }) => {
             </button>
           )}
         </div>
-      </div>
-    </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   )
 }
 

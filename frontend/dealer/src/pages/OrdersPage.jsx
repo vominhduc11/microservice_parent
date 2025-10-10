@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
 import { ordersAPI, productsAPI, getDealerInfo, handleAPIError } from '../services/api'
 import { LoadingSpinner } from '../components/LoadingStates'
 import OrderDetailModal from '../components/OrderDetailModal'
+import { containerVariants, itemVariants, fadeInUpVariants } from '../utils/animations'
 
 const OrdersPage = () => {
   const [orders, setOrders] = useState([])
@@ -163,8 +165,8 @@ const OrdersPage = () => {
 
   if (loading) {
     return (
-      <div className="pt-[70px] xl:pt-[80px] 2xl:pt-[90px] 3xl:pt-[100px] 4xl:pt-[120px] 5xl:pt-[140px] pb-20">
-        <div className="max-w-screen-5xl mx-auto px-4 sm:px-5 md:px-6 lg:px-8 xl:px-10 2xl:px-12 3xl:px-16 4xl:px-20 5xl:px-24">
+      <div className="pt-16 md:pt-18 lg:pt-20 pb-20">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
           <div className="flex justify-center items-center py-20">
             <LoadingSpinner size="large" />
           </div>
@@ -175,13 +177,17 @@ const OrdersPage = () => {
 
   if (error) {
     return (
-      <div className="pt-[70px] xl:pt-[80px] 2xl:pt-[90px] 3xl:pt-[100px] 4xl:pt-[120px] 5xl:pt-[140px] pb-20">
-        <div className="max-w-screen-5xl mx-auto px-4 sm:px-5 md:px-6 lg:px-8 xl:px-10 2xl:px-12 3xl:px-16 4xl:px-20 5xl:px-24">
+      <div className="pt-16 md:pt-18 lg:pt-20 pb-20">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
           <div className="text-center py-20">
-            <div className="text-red-500 text-lg mb-4">{error}</div>
+            <div className="w-16 h-16 mx-auto mb-6 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center">
+              <span className="text-3xl">⚠️</span>
+            </div>
+            <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">Có lỗi xảy ra</h3>
+            <div className="text-red-600 dark:text-red-400 mb-6">{error}</div>
             <button
               onClick={() => fetchOrders(currentPage, statusFilter)}
-              className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+              className="px-6 py-3 bg-primary-600 text-white rounded-xl hover:bg-primary-700 transition-all duration-200 font-medium shadow-md hover:shadow-lg"
             >
               Thử lại
             </button>
@@ -192,36 +198,44 @@ const OrdersPage = () => {
   }
 
   return (
-    <div className="pt-[70px] xl:pt-[80px] 2xl:pt-[90px] 3xl:pt-[100px] 4xl:pt-[120px] 5xl:pt-[140px] pb-20">
-      <div className="max-w-screen-5xl mx-auto px-4 sm:px-5 md:px-6 lg:px-8 xl:px-10 2xl:px-12 3xl:px-16 4xl:px-20 5xl:px-24">
+    <div className="pt-16 md:pt-18 lg:pt-20 pb-20">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
 
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">
-            📦 Đơn hàng của tôi
-          </h1>
-          <p className="text-slate-600 dark:text-slate-400">
-            Quản lý và theo dõi tất cả đơn hàng của bạn
-          </p>
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 dark:from-primary-400 dark:to-primary-600 flex items-center justify-center shadow-md">
+              <span className="text-2xl">📦</span>
+            </div>
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">
+                Đơn hàng của tôi
+              </h1>
+              <p className="text-sm text-slate-600 dark:text-slate-400">
+                Quản lý và theo dõi tất cả đơn hàng
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Status Filter */}
-        <div className="mb-6">
+        <div className="mb-6 bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 shadow-soft">
           <div className="flex flex-wrap gap-2">
             {[
-              { value: 'all', label: 'Tất cả' },
-              { value: 'UNPAID', label: 'Chưa thanh toán' },
-              { value: 'PAID', label: 'Đã thanh toán' }
+              { value: 'all', label: 'Tất cả', icon: '📋' },
+              { value: 'UNPAID', label: 'Chưa thanh toán', icon: '⏳' },
+              { value: 'PAID', label: 'Đã thanh toán', icon: '✅' }
             ].map((filter) => (
               <button
                 key={filter.value}
                 onClick={() => handleStatusFilter(filter.value)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 shadow-sm ${
                   statusFilter === filter.value
-                    ? 'bg-primary-600 text-white'
+                    ? 'bg-primary-600 text-white shadow-md scale-105'
                     : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
                 }`}
               >
+                <span>{filter.icon}</span>
                 {filter.label}
               </button>
             ))}
@@ -230,31 +244,39 @@ const OrdersPage = () => {
 
         {/* Orders List */}
         {orders.length === 0 ? (
-          <div className="text-center py-20">
-            <div className="w-24 h-24 mx-auto mb-6 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center">
-              <svg className="w-12 h-12 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-              </svg>
+          <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-soft p-12">
+            <div className="text-center">
+              <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-800 rounded-2xl flex items-center justify-center">
+                <span className="text-4xl">📦</span>
+              </div>
+              <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
+                Chưa có đơn hàng nào
+              </h3>
+              <p className="text-slate-600 dark:text-slate-400 mb-6">
+                Bạn chưa có đơn hàng nào. Hãy bắt đầu mua sắm ngay!
+              </p>
+              <button
+                onClick={() => window.location.href = '/products'}
+                className="px-6 py-3 bg-primary-600 text-white rounded-xl font-medium hover:bg-primary-700 transition-all duration-200 shadow-md hover:shadow-lg hover:-translate-y-0.5"
+              >
+                🛍️ Bắt đầu mua sắm
+              </button>
             </div>
-            <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
-              Chưa có đơn hàng nào
-            </h3>
-            <p className="text-slate-600 dark:text-slate-400 mb-6">
-              Bạn chưa có đơn hàng nào. Hãy bắt đầu mua sắm ngay!
-            </p>
-            <button
-              onClick={() => window.location.href = '/products'}
-              className="px-6 py-3 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition-colors"
-            >
-              🛍️ Bắt đầu mua sắm
-            </button>
           </div>
         ) : (
-          <div className="space-y-4">
+          <motion.div
+            className="space-y-4"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
             {orders.map((order) => (
-              <div
+              <motion.div
                 key={order.id}
-                className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 hover:shadow-md transition-shadow"
+                className="bg-white dark:bg-slate-800 rounded-2xl shadow-soft border border-slate-200 dark:border-slate-700 p-6 hover:shadow-soft-lg transition-all duration-200"
+                variants={itemVariants}
+                whileHover={{ scale: 1.01, y: -2 }}
+                whileTap={{ scale: 0.99 }}
               >
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
 
@@ -336,9 +358,9 @@ const OrdersPage = () => {
                     </div>
                   </div>
                 )}
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         )}
 
         {/* Pagination */}

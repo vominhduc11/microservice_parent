@@ -1,9 +1,11 @@
 import { useEffect } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
+import { motion, AnimatePresence } from 'framer-motion'
 import Header from './Header'
 import Footer from './Footer'
 import Breadcrumb from './Breadcrumb'
 import { CartProvider } from '../context/CartContext'
+import { pageVariants } from '../utils/animations'
 
 const DashboardLayout = ({ dealerInfo, onLogout }) => {
   const location = useLocation()
@@ -46,17 +48,26 @@ const DashboardLayout = ({ dealerInfo, onLogout }) => {
 
   return (
     <CartProvider>
-      <div className="bg-slate-50 dark:bg-slate-900 w-full relative transition-colors duration-300">
+      <div className="bg-slate-50 dark:bg-slate-900 w-full min-h-screen flex flex-col relative transition-colors duration-300">
         <Header
           dealerInfo={dealerInfo}
           onLogout={onLogout}
           currentPage={currentPage}
         />
         <Breadcrumb />
-        <main className="main-content">
-          <div key={location.pathname} className="relative w-full min-h-[calc(100vh-140px)] pb-20 md:pb-0 animate-fade-in-up">
-            <Outlet />
-          </div>
+        <main className="main-content flex-1">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={location.pathname}
+              className="relative w-full min-h-[calc(100vh-180px)] pb-20 md:pb-0"
+              variants={pageVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+            >
+              <Outlet />
+            </motion.div>
+          </AnimatePresence>
         </main>
         <Footer />
       </div>

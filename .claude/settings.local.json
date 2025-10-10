@@ -24,7 +24,8 @@
       "Bash(/dev/null)",
       "Bash(kubectl describe:*)",
       "Bash(kubectl get:*)",
-      "Bash(kubectl apply:*)"
+      "Bash(kubectl apply:*)",
+      "Bash(npm install:*)"
     ],
     "deny": [],
     "ask": []
