@@ -23,6 +23,12 @@ public class EmailService {
 
     @Value("${spring.mail.username}")
     private String fromEmail;
+
+    @Value("${app.base-url:https://api.4thitek.vn}")
+    private String baseUrl;
+
+    @Value("${app.dealer-portal-url:https://dealer.4thitek.vn}")
+    private String dealerPortalUrl;
     
     public void sendDealerWelcomeEmail(DealerEmailEvent event) throws MessagingException, UnsupportedEncodingException {
         log.info("Sending dealer welcome email to: {}", event.getEmail());
@@ -77,7 +83,7 @@ public class EmailService {
                     </ol>
                     
                     <div style="text-align: center; margin: 30px 0;">
-                        <a href="http://localhost:8080/api/auth/login"
+                        <a href="%s"
                            style="background-color: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
                            Access Portal
                         </a>
@@ -132,7 +138,7 @@ public class EmailService {
         String formattedLoginTime = event.getLoginTime().format(formatter);
 
         // Build confirmation URL with JWT token
-        String confirmationUrl = "http://localhost:8080/api/auth/confirm-login?token=" + event.getConfirmationToken();
+        String confirmationUrl = baseUrl + "/api/auth/confirm-login?token=" + event.getConfirmationToken();
 
         return """
             <html>
@@ -211,7 +217,7 @@ public class EmailService {
 
     private String buildPasswordResetEmailContent(PasswordResetEvent event) {
         // Build password reset URL with JWT token - points to backend form
-        String resetUrl = "http://localhost:8080/api/auth/reset-password-form?token=" + event.getResetToken();
+        String resetUrl = baseUrl + "/api/auth/reset-password-form?token=" + event.getResetToken();
 
         return """
             <html>

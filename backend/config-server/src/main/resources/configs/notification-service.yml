@@ -36,6 +36,14 @@ spring:
           ssl:
             trust: smtp.gmail.com
 
+# Application Configuration
+app:
+  base-url: ${APP_BASE_URL:https://api.4thitek.vn}
+  dealer-portal-url: ${DEALER_PORTAL_URL:https://dealer.4thitek.vn}
+  mail:
+    from-email: ${MAIL_FROM_EMAIL:noreply@4thitek.vn}
+    from-name: ${MAIL_FROM_NAME:4ThiTek E-commerce Platform}
+
 nexhub:
   jwt:
     jwks-uri: http://auth-service:8081/auth/.well-known/jwks.json
