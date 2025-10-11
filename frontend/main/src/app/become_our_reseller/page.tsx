@@ -544,8 +544,8 @@ export default function BecomeOurReseller() {
             // Submit reseller application via API
 
 
-const apiUrl = `${API_BASE_URL}/user/dealer`;
-            
+const apiUrl = `${API_BASE_URL}/api/user/dealer`;
+
             const response = await axios.post(apiUrl, {
                 companyName: formFields.name,
                 address: formFields.address,
