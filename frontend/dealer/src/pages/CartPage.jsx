@@ -1,9 +1,21 @@
+/**
+ * @fileoverview Cart page component for managing shopping cart and checkout
+ * @module pages/CartPage
+ */
+
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Cart from '../components/Cart'
 import { useCart } from '../context/CartContext'
 import { ordersAPI, getDealerInfo, handleAPIError } from '../services/api'
 
+/**
+ * Cart page component that displays shopping cart and handles checkout process
+ * @component
+ * @returns {JSX.Element} Rendered cart page
+ * @example
+ * <CartPage />
+ */
 const CartPage = () => {
   const navigate = useNavigate()
   const { cart, updateCartItem, removeFromCart, getTotalAmount, clearCart, refreshCart, isLoadingProductInfo } = useCart()
@@ -13,6 +25,10 @@ const CartPage = () => {
     refreshCart()
   }, [refreshCart])
 
+  /**
+   * Handles checkout process by creating order and navigating to success page
+   * @returns {Promise<void>}
+   */
   const handleCheckout = async () => {
     const dealerInfo = getDealerInfo()
     if (!dealerInfo?.accountId) {
@@ -26,8 +42,6 @@ const CartPage = () => {
     }
 
     try {
-      console.log('🔥 Starting checkout process...')
-
       // 1. Prepare order data theo format API
       const orderData = {
         idDealer: dealerInfo.accountId,
@@ -38,15 +52,11 @@ const CartPage = () => {
         }))
       }
 
-      console.log('🔥 Order data to send:', orderData)
-
       // 2. Tạo đơn hàng trước
       const orderResponse = await ordersAPI.create(orderData)
-      console.log('✅ Order created successfully:', orderResponse)
 
       // 3. Xóa giỏ hàng sau khi tạo đơn hàng thành công
       await clearCart()
-      console.log('✅ Cart cleared successfully')
 
       // 4. Navigate to success page với thông tin đơn hàng từ API
       navigate('/order-success', {

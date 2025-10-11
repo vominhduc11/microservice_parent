@@ -421,8 +421,9 @@ services:
       dockerfile: notification-service/Dockerfile
     <<: *java-service-template
     container_name: notification-service
-    expose:
-      - "8087"
+    # Expose to host for WebSocket connections via Nginx
+    ports:
+      - "127.0.0.1:8087:8087"
     depends_on:
       - config-server
       - postgres

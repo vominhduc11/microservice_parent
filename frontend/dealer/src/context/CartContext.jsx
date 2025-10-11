@@ -118,12 +118,10 @@ export const CartProvider = ({ children }) => {
       try {
         setIsLoading(true)
         const response = await cartAPI.getAll(dealerInfo.accountId)
-        console.log('🛒 Cart API Response:', response)
 
         if (response && response.success && response.data && response.data.items) {
           // Handle new API response format: response.data.items contains the cart items
           const cartData = response.data.items || []
-          console.log('📦 Raw cart data:', cartData)
 
           // Transform API cart items to expected format
           const transformedCartData = cartData.map(item => ({
@@ -136,8 +134,6 @@ export const CartProvider = ({ children }) => {
             subtotal: item.subtotal,
             addedAt: item.addedAt
           }))
-
-          console.log('🔄 Transformed cart data:', transformedCartData)
 
           // Enrich cart items with product information
           const enrichedCart = await enrichCartWithProductInfo(transformedCartData)
@@ -156,12 +152,6 @@ export const CartProvider = ({ children }) => {
   }, [])
 
   const addToCart = async (product, quantity = 1, unitPrice = null) => {
-    console.log('🔥 CartContext.addToCart CALLED with:')
-    console.log('product.id:', product.id)
-    console.log('quantity:', quantity)
-    console.log('unitPrice (received):', unitPrice)
-    console.log('product.price:', product.price)
-
     const dealerInfo = getDealerInfo()
     if (!dealerInfo?.accountId) {
       console.error('No dealer info found')
@@ -173,8 +163,6 @@ export const CartProvider = ({ children }) => {
 
       // Use provided unitPrice or fallback to product.price
       const priceToUse = unitPrice !== null ? unitPrice : product.price
-      console.log('💸 priceToUse:', priceToUse)
-      console.log('💸 priceToUse calculation: unitPrice !== null?', unitPrice !== null, 'unitPrice:', unitPrice, 'product.price:', product.price)
 
       // Call API to add to cart
       const _requestBody = {
@@ -302,7 +290,6 @@ export const CartProvider = ({ children }) => {
   }
 
   const removeFromCart = async (cartId) => {
-    console.log('🗑️ removeFromCart called with cartId:', cartId)
     const dealerInfo = getDealerInfo()
     if (!dealerInfo?.accountId) {
       console.error('No dealer info found')
@@ -311,7 +298,6 @@ export const CartProvider = ({ children }) => {
 
     try {
       setIsLoading(true)
-      console.log('🔥 Calling cartAPI.remove with cartId:', cartId)
       await cartAPI.remove(cartId)
 
       // Refresh cart from server to ensure consistency
@@ -349,14 +335,12 @@ export const CartProvider = ({ children }) => {
 
     try {
       setIsLoading(true)
-      console.log('🔥 Clearing cart for dealerId:', dealerInfo.accountId)
 
       // Gọi API xóa giỏ hàng: DELETE /cart/dealer/{dealerId}
       await cartAPI.clear(dealerInfo.accountId)
 
       // Cập nhật local state ngay lập tức
       setCart([])
-      console.log('✅ Cart cleared successfully')
 
     } catch (error) {
       console.error('❌ Failed to clear cart:', error)

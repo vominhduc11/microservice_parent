@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Orders page component for viewing and managing dealer orders
+ * @module pages/OrdersPage
+ */
+
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { ordersAPI, productsAPI, getDealerInfo, handleAPIError } from '../services/api'
@@ -5,6 +10,13 @@ import { LoadingSpinner } from '../components/LoadingStates'
 import OrderDetailModal from '../components/OrderDetailModal'
 import { containerVariants, itemVariants, fadeInUpVariants } from '../utils/animations'
 
+/**
+ * Orders page component displaying dealer order history with filtering and details
+ * @component
+ * @returns {JSX.Element} Rendered orders page
+ * @example
+ * <OrdersPage />
+ */
 const OrdersPage = () => {
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(true)
@@ -18,6 +30,11 @@ const OrdersPage = () => {
 
   const dealerInfo = getDealerInfo()
 
+  /**
+   * Formats price value to Vietnamese currency format
+   * @param {number} price - Price value to format
+   * @returns {string} Formatted price string
+   */
   const formatPrice = (price) => {
     return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
@@ -25,6 +42,11 @@ const OrdersPage = () => {
     }).format(price)
   }
 
+  /**
+   * Formats date string to Vietnamese locale format
+   * @param {string} dateString - ISO date string
+   * @returns {string} Formatted date string
+   */
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleString('vi-VN', {
       year: 'numeric',
@@ -35,6 +57,11 @@ const OrdersPage = () => {
     })
   }
 
+  /**
+   * Renders status badge based on payment status
+   * @param {string} paymentStatus - Payment status (UNPAID, PAID, PENDING, CANCELLED)
+   * @returns {JSX.Element} Status badge component
+   */
   const getStatusBadge = (paymentStatus) => {
     const statusConfig = {
       UNPAID: { label: 'Chưa thanh toán', class: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-200' },
@@ -51,7 +78,11 @@ const OrdersPage = () => {
     )
   }
 
-  // Fetch product info for order items
+  /**
+   * Fetches product information for order items
+   * @param {number} productId - Product ID to fetch
+   * @returns {Promise<Object>} Product information object
+   */
   const fetchProductInfo = async (productId) => {
     if (productInfoCache[productId]) {
       return productInfoCache[productId]
@@ -90,6 +121,12 @@ const OrdersPage = () => {
     }
   }
 
+  /**
+   * Fetches orders from API with pagination and filtering
+   * @param {number} page - Page number for pagination
+   * @param {string} status - Filter by order status
+   * @returns {Promise<void>}
+   */
   const fetchOrders = async (page = 1, status = 'all') => {
     try {
       setLoading(true)
@@ -144,20 +181,35 @@ const OrdersPage = () => {
     }
   }, [dealerInfo?.accountId, currentPage, statusFilter])
 
+  /**
+   * Handles status filter change
+   * @param {string} status - New status filter value
+   */
   const handleStatusFilter = (status) => {
     setStatusFilter(status)
     setCurrentPage(1)
   }
 
+  /**
+   * Handles pagination page change
+   * @param {number} page - New page number
+   */
   const handlePageChange = (page) => {
     setCurrentPage(page)
   }
 
+  /**
+   * Handles view detail button click
+   * @param {number} orderId - Order ID to view details
+   */
   const handleViewDetail = (orderId) => {
     setSelectedOrderId(orderId)
     setIsModalOpen(true)
   }
 
+  /**
+   * Handles closing the order detail modal
+   */
   const handleCloseModal = () => {
     setIsModalOpen(false)
     setSelectedOrderId(null)

@@ -1,9 +1,27 @@
+/**
+ * @fileoverview Breadcrumb navigation component displaying current page path
+ * @module components/Breadcrumb
+ */
+
 import { Link, useLocation } from 'react-router-dom'
 
+/**
+ * Breadcrumb navigation component showing page hierarchy
+ * @component
+ * @returns {JSX.Element|null} Rendered breadcrumb navigation or null if on home page
+ * @example
+ * <Breadcrumb />
+ */
 const Breadcrumb = () => {
   const location = useLocation()
   const pathnames = location.pathname.split('/').filter((x) => x)
 
+  /**
+   * Gets display name and icon for breadcrumb item
+   * @param {string} pathname - Path segment
+   * @param {number} index - Index in pathnames array
+   * @returns {Object} Object with name and icon properties
+   */
   const getBreadcrumbName = (pathname, index) => {
     
     switch (pathname) {
@@ -28,6 +46,11 @@ const Breadcrumb = () => {
     }
   }
 
+  /**
+   * Generates full path for breadcrumb link
+   * @param {number} index - Index in pathnames array
+   * @returns {string} Full path string
+   */
   const generatePath = (index) => {
     return '/' + pathnames.slice(0, index + 1).join('/')
   }

@@ -25,7 +25,10 @@
       "Bash(kubectl describe:*)",
       "Bash(kubectl get:*)",
       "Bash(kubectl apply:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(git ls-tree:*)",
+      "Bash(while read file)",
+      "Bash(do echo \"=== $file ===\")"
     ],
     "deny": [],
     "ask": []

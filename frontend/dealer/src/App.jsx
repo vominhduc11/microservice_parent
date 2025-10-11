@@ -1,5 +1,9 @@
 import { useState, useEffect, lazy, Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { Toaster } from 'react-hot-toast'
+import { queryClient } from './lib/queryClient'
 import DashboardLayout from './components/DashboardLayout'
 import LoginPage from './pages/LoginPage'
 
@@ -61,10 +65,65 @@ function App() {
   }
 
   return (
-    <ErrorBoundary>
-      <Router>
-          <div className="app">
+    <QueryClientProvider client={queryClient}>
+      <ErrorBoundary>
+        <Router>
+            <div className="app">
             <SkipLink />
+            <Toaster
+              position="top-right"
+              reverseOrder={false}
+              gutter={8}
+              containerStyle={{
+                top: 20,
+                right: 20,
+              }}
+              toastOptions={{
+                // Default options for all toasts
+                className: '',
+                duration: 4000,
+                style: {
+                  background: 'var(--toast-bg, #fff)',
+                  color: 'var(--toast-text, #363636)',
+                  borderRadius: '12px',
+                  padding: '16px',
+                  boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+                  maxWidth: '500px',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                },
+                // Success toast style
+                success: {
+                  iconTheme: {
+                    primary: '#10b981',
+                    secondary: '#fff',
+                  },
+                  style: {
+                    background: 'var(--toast-success-bg, #ecfdf5)',
+                    color: 'var(--toast-success-text, #065f46)',
+                  },
+                },
+                // Error toast style
+                error: {
+                  iconTheme: {
+                    primary: '#ef4444',
+                    secondary: '#fff',
+                  },
+                  style: {
+                    background: 'var(--toast-error-bg, #fef2f2)',
+                    color: 'var(--toast-error-text, #991b1b)',
+                  },
+                  duration: 5000,
+                },
+                // Loading toast style
+                loading: {
+                  iconTheme: {
+                    primary: '#6366f1',
+                    secondary: '#fff',
+                  },
+                },
+              }}
+            />
 
             <Routes>
               {/* Login Route - accessible when not logged in */}
@@ -137,7 +196,10 @@ function App() {
 
           </div>
         </Router>
-    </ErrorBoundary>
+        {/* React Query Devtools - only in development */}
+        {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />}
+      </ErrorBoundary>
+    </QueryClientProvider>
   )
 }
 

@@ -1,9 +1,21 @@
+/**
+ * @fileoverview Product detail page component with data fetching and transformation
+ * @module pages/ProductDetailPage
+ */
+
 import { useState, useEffect } from 'react'
 import { useNavigate, useLocation, useParams } from 'react-router-dom'
 import ProductDetail from '../components/ProductDetail'
 import { useCart } from '../context/CartContext'
 import { productsAPI, handleAPIError } from '../services/api'
 
+/**
+ * Product detail page component that fetches and displays detailed product information
+ * @component
+ * @returns {JSX.Element} Rendered product detail page
+ * @example
+ * <ProductDetailPage />
+ */
 const ProductDetailPage = () => {
   const navigate = useNavigate()
   const location = useLocation()
@@ -13,7 +25,11 @@ const ProductDetailPage = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  // Helper functions to parse JSON fields
+  /**
+   * Parses image URL from JSON string
+   * @param {string} imageStr - JSON string containing image data
+   * @returns {string} Image URL or original string if parsing fails
+   */
   const parseImageUrl = (imageStr) => {
     try {
       const imageObj = JSON.parse(imageStr)
@@ -23,6 +39,11 @@ const ProductDetailPage = () => {
     }
   }
 
+  /**
+   * Parses product descriptions from JSON string
+   * @param {string} descriptionsStr - JSON string containing descriptions array
+   * @returns {Array} Parsed descriptions array
+   */
   const parseDescriptions = (descriptionsStr) => {
     try {
       return JSON.parse(descriptionsStr)
@@ -31,6 +52,11 @@ const ProductDetailPage = () => {
     }
   }
 
+  /**
+   * Parses product videos from JSON string
+   * @param {string} videosStr - JSON string containing videos array
+   * @returns {Array} Parsed videos array
+   */
   const parseVideos = (videosStr) => {
     try {
       return JSON.parse(videosStr)
@@ -39,6 +65,11 @@ const ProductDetailPage = () => {
     }
   }
 
+  /**
+   * Parses product specifications from JSON string
+   * @param {string} specificationsStr - JSON string containing specifications object
+   * @returns {Object} Parsed specifications with general and technical properties
+   */
   const parseSpecifications = (specificationsStr) => {
     try {
       return JSON.parse(specificationsStr)
@@ -47,6 +78,11 @@ const ProductDetailPage = () => {
     }
   }
 
+  /**
+   * Parses wholesale pricing tiers from JSON string
+   * @param {string} wholesalePriceStr - JSON string containing wholesale price array
+   * @returns {Array} Parsed wholesale price tiers
+   */
   const parseWholesalePrice = (wholesalePriceStr) => {
     try {
       return JSON.parse(wholesalePriceStr)
@@ -55,6 +91,12 @@ const ProductDetailPage = () => {
     }
   }
 
+  /**
+   * Transforms API product data to frontend product format
+   * @param {Object} apiProduct - Product data from API
+   * @param {number} stock - Available stock quantity
+   * @returns {Object} Transformed product object
+   */
   const transformProduct = (apiProduct, stock = 0) => {
     return {
       id: apiProduct.id,
@@ -107,15 +149,20 @@ const ProductDetailPage = () => {
     }
   }, [id])
 
+  /**
+   * Handles navigation back to products page
+   */
   const handleBack = () => {
     navigate('/products')
   }
 
+  /**
+   * Handles adding product to cart
+   * @param {Object} product - Product to add to cart
+   * @param {number} quantity - Quantity to add
+   * @param {number} unitPrice - Unit price for the product
+   */
   const handleAddToCart = (product, quantity, unitPrice) => {
-    console.log('🔥 ProductDetailPage.handleAddToCart CALLED')
-    console.log('product.id:', product?.id)
-    console.log('quantity:', quantity)
-    console.log('unitPrice (received from ProductDetail):', unitPrice)
     addToCart(product, quantity, unitPrice)
   }
 

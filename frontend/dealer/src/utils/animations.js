@@ -1,6 +1,26 @@
-// Animation variants and configurations for Framer Motion
+/**
+ * @fileoverview Animation variants and configurations for Framer Motion
+ * @module utils/animations
+ *
+ * This module provides reusable animation variants for Framer Motion components.
+ * Includes page transitions, list animations, hover effects, modal animations,
+ * slide animations, and more.
+ *
+ * @example
+ * import { pageVariants, containerVariants } from './utils/animations'
+ *
+ * <motion.div variants={pageVariants} initial="initial" animate="animate">
+ *   Content
+ * </motion.div>
+ */
 
-// Page transitions
+/**
+ * Page transition animation variants
+ * @type {Object}
+ * @property {Object} initial - Initial animation state
+ * @property {Object} animate - Animated state
+ * @property {Object} exit - Exit animation state
+ */
 export const pageVariants = {
   initial: {
     opacity: 0,
@@ -23,7 +43,12 @@ export const pageVariants = {
   },
 }
 
-// Stagger container for lists
+/**
+ * Stagger container animation variants for lists
+ * @type {Object}
+ * @property {Object} hidden - Hidden state
+ * @property {Object} visible - Visible state with stagger effect
+ */
 export const containerVariants = {
   hidden: { opacity: 0 },
   visible: {

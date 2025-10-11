@@ -1,5 +1,29 @@
+/**
+ * @fileoverview Reusable button component with multiple variants and sizes
+ * @module components/UI/Button
+ */
+
 import PropTypes from 'prop-types'
 
+/**
+ * Customizable button component with loading states and variants
+ * @component
+ * @param {Object} props - Component props
+ * @param {React.ReactNode} props.children - Button content
+ * @param {string} [props.variant='primary'] - Button style variant
+ * @param {string} [props.size='md'] - Button size
+ * @param {boolean} [props.disabled=false] - Whether button is disabled
+ * @param {boolean} [props.loading=false] - Whether button shows loading state
+ * @param {string} [props.className=''] - Additional CSS classes
+ * @param {React.ReactNode} [props.icon] - Optional icon element
+ * @param {Function} [props.onClick] - Click handler
+ * @param {string} [props.type='button'] - Button type attribute
+ * @returns {JSX.Element} Rendered button
+ * @example
+ * <Button variant="primary" size="md" onClick={handleClick}>
+ *   Click Me
+ * </Button>
+ */
 const Button = ({
   children,
   variant = 'primary',

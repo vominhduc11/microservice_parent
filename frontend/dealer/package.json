@@ -14,11 +14,14 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.90.2",
+    "@tanstack/react-query-devtools": "^5.90.2",
     "framer-motion": "^12.23.22",
     "lucide-react": "^0.544.0",
     "prop-types": "^15.8.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-hot-toast": "^2.6.0",
     "react-modal": "^3.16.3",
     "react-router-dom": "^7.7.1"
   },

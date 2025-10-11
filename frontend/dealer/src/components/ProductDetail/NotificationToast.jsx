@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types'
+
 const NotificationToast = ({ show, message, quantity, onClose }) => {
   if (!show) return null
 
@@ -26,6 +28,13 @@ const NotificationToast = ({ show, message, quantity, onClose }) => {
       </div>
     </div>
   )
+}
+
+NotificationToast.propTypes = {
+  show: PropTypes.bool.isRequired,
+  message: PropTypes.string,
+  quantity: PropTypes.number,
+  onClose: PropTypes.func
 }
 
 export default NotificationToast

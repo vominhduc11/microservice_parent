@@ -1,10 +1,41 @@
-import { useNavigate } from 'react-router-dom'
+/**
+ * @fileoverview Shopping cart component for managing cart items and checkout
+ * @module components/Cart
+ */
 
+import { useNavigate } from 'react-router-dom'
+import PropTypes from 'prop-types'
+
+/**
+ * Shopping cart component displaying cart items with quantity controls and checkout
+ * @component
+ * @param {Object} props - Component props
+ * @param {Array} props.cart - Array of cart items
+ * @param {Function} props.onUpdateItem - Callback to update cart item quantity
+ * @param {Function} props.onRemoveItem - Callback to remove item from cart
+ * @param {Function} props.onCheckout - Callback to proceed to checkout
+ * @param {number} props.totalAmount - Total cart amount before VAT
+ * @param {boolean} [props.isLoadingProductInfo=false] - Loading state for product info
+ * @returns {JSX.Element} Rendered cart component
+ * @example
+ * <Cart
+ *   cart={cartItems}
+ *   onUpdateItem={(id, action, qty) => updateCart(id, action, qty)}
+ *   onRemoveItem={(id) => removeItem(id)}
+ *   onCheckout={() => handleCheckout()}
+ *   totalAmount={50000000}
+ *   isLoadingProductInfo={false}
+ * />
+ */
 const Cart = ({ cart, onUpdateItem, onRemoveItem, onCheckout, totalAmount, isLoadingProductInfo = false }) => {
   const navigate = useNavigate()
   const VAT_RATE = 0.1
 
-  // Utility functions
+  /**
+   * Formats price to Vietnamese currency format
+   * @param {number} price - Price value
+   * @returns {string} Formatted price string
+   */
   const formatPrice = (price) => {
     return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
@@ -12,6 +43,11 @@ const Cart = ({ cart, onUpdateItem, onRemoveItem, onCheckout, totalAmount, isLoa
     }).format(price)
   }
 
+  /**
+   * Extracts image URL from various data formats
+   * @param {string|Object} imageData - Image data (URL string or JSON object)
+   * @returns {string|null} Image URL or null
+   */
   const getImageUrl = (imageData) => {
     if (!imageData) return null
 
@@ -34,9 +70,26 @@ const Cart = ({ cart, onUpdateItem, onRemoveItem, onCheckout, totalAmount, isLoa
     return null
   }
 
+  /**
+   * Calculates VAT amount
+   * @param {number} amount - Base amount
+   * @returns {number} VAT amount
+   */
   const calculateVAT = (amount) => amount * VAT_RATE
+
+  /**
+   * Calculates total including VAT
+   * @param {number} amount - Base amount
+   * @returns {number} Total amount with VAT
+   */
   const calculateTotal = (amount) => amount + calculateVAT(amount)
 
+  /**
+   * Handles quantity changes for cart items
+   * @param {number} cartId - Cart item ID
+   * @param {string} action - Action type (increment/decrement/set)
+   * @param {number|null} quantity - New quantity value for 'set' action
+   */
   const handleQuantityChange = (cartId, action, quantity = null) => {
     onUpdateItem(cartId, action, quantity)
   }
@@ -222,6 +275,29 @@ const Cart = ({ cart, onUpdateItem, onRemoveItem, onCheckout, totalAmount, isLoa
       </div>
     </div>
   )
+}
+
+Cart.propTypes = {
+  cart: PropTypes.arrayOf(PropTypes.shape({
+    cartId: PropTypes.number,
+    id: PropTypes.number,
+    name: PropTypes.string,
+    description: PropTypes.string,
+    price: PropTypes.number,
+    unitPrice: PropTypes.number,
+    quantity: PropTypes.number.isRequired,
+    stock: PropTypes.number,
+    image: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
+  })).isRequired,
+  onUpdateItem: PropTypes.func.isRequired,
+  onRemoveItem: PropTypes.func.isRequired,
+  onCheckout: PropTypes.func.isRequired,
+  totalAmount: PropTypes.number.isRequired,
+  isLoadingProductInfo: PropTypes.bool
+}
+
+Cart.defaultProps = {
+  isLoadingProductInfo: false
 }
 
 export default Cart

@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import PropTypes from 'prop-types'
 import { useCart } from '../context/CartContext'
 import { LazyImage, LoadingButton } from './LoadingStates'
-import { useNotification } from './ToastNotification'
+import { showSuccess, showError } from '../utils/toast'
 import { modalVariants, overlayVariants } from '../utils/animations'
 
 const QuickViewModal = ({ product, isOpen, onClose, onViewDetails }) => {
   const [quantity, setQuantity] = useState(1)
   const [isLoading, setIsLoading] = useState(false)
   const { addToCart } = useCart()
-  const { notifySuccess, notifyError } = useNotification()
 
   // Utility function to get image URL from JSON string or direct URL
   const getImageUrl = (imageData) => {
@@ -74,10 +74,10 @@ const QuickViewModal = ({ product, isOpen, onClose, onViewDetails }) => {
       await new Promise(resolve => setTimeout(resolve, 500))
       
       addToCart(product, quantity)
-      notifySuccess(`Đã thêm ${quantity} sản phẩm vào giỏ hàng`)
+      showSuccess(`Đã thêm ${quantity} sản phẩm vào giỏ hàng`)
       onClose()
     } catch {
-      notifyError('Không thể thêm sản phẩm vào giỏ hàng')
+      showError('Không thể thêm sản phẩm vào giỏ hàng')
     } finally {
       setIsLoading(false)
     }
@@ -290,6 +290,22 @@ const QuickViewModal = ({ product, isOpen, onClose, onViewDetails }) => {
       )}
     </AnimatePresence>
   )
+}
+
+QuickViewModal.propTypes = {
+  product: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+    sku: PropTypes.string,
+    description: PropTypes.string,
+    price: PropTypes.number.isRequired,
+    stock: PropTypes.number.isRequired,
+    warranty: PropTypes.number,
+    image: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
+  }),
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onViewDetails: PropTypes.func.isRequired
 }
 
 export default QuickViewModal

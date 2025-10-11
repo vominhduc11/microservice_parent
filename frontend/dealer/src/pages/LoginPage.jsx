@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Login page component with authentication and password recovery functionality
+ * @module pages/LoginPage
+ */
+
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
@@ -5,7 +10,17 @@ import PropTypes from 'prop-types'
 import { authAPI, handleAPIError } from '../services/api'
 import { Music, Lock, User, AlertCircle, LogIn, Mail, Eye, EyeOff, CheckCircle, ArrowLeft } from 'lucide-react'
 import { fadeInDownVariants, fadeInUpVariants, scaleInVariants } from '../utils/animations'
+import { showSuccess, showError, showAPIError } from '../utils/toast'
 
+/**
+ * Login page with authentication form and password recovery
+ * @component
+ * @param {Object} props - Component props
+ * @param {Function} props.onLogin - Callback function when login is successful
+ * @returns {JSX.Element} Rendered login page
+ * @example
+ * <LoginPage onLogin={(userData) => handleUserLogin(userData)} />
+ */
 const LoginPage = ({ onLogin }) => {
   const navigate = useNavigate()
   const [formData, setFormData] = useState({
@@ -40,6 +55,10 @@ const LoginPage = ({ onLogin }) => {
     return () => mediaQuery.removeEventListener('change', checkDarkMode)
   }, [])
 
+  /**
+   * Handles input field changes in the login form
+   * @param {Event} e - Input change event
+   */
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target
     setFormData(prev => ({
@@ -49,6 +68,11 @@ const LoginPage = ({ onLogin }) => {
     if (error) setError('')
   }
 
+  /**
+   * Handles login form submission
+   * @param {Event} e - Form submit event
+   * @returns {Promise<void>}
+   */
   const handleSubmit = async (e) => {
     e.preventDefault()
     setIsLoading(true)
@@ -62,15 +86,22 @@ const LoginPage = ({ onLogin }) => {
 
       onLogin(response.data)
       setFormData({ username: '', password: '', rememberMe: false })
+      showSuccess('Đăng nhập thành công! Chào mừng bạn trở lại.')
       navigate('/products')
     } catch (error) {
       const errorInfo = handleAPIError(error, false)
       setError(errorInfo.message)
+      showAPIError(error, 'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.')
     } finally {
       setIsLoading(false)
     }
   }
 
+  /**
+   * Handles forgot password form submission
+   * @param {Event} e - Form submit event
+   * @returns {Promise<void>}
+   */
   const handleForgotPassword = async (e) => {
     e.preventDefault()
     setForgotLoading(true)
@@ -79,14 +110,19 @@ const LoginPage = ({ onLogin }) => {
     try {
       await authAPI.forgotPassword(forgotEmail)
       setForgotSuccess(true)
+      showSuccess('Email khôi phục đã được gửi! Vui lòng kiểm tra hộp thư.')
     } catch (error) {
       const errorInfo = handleAPIError(error, false)
       setForgotError(errorInfo.message)
+      showAPIError(error, 'Không thể gửi email khôi phục. Vui lòng thử lại.')
     } finally {
       setForgotLoading(false)
     }
   }
 
+  /**
+   * Handles navigation back to login form from forgot password
+   */
   const handleBackToLogin = () => {
     setShowForgotPassword(false)
     setForgotEmail('')

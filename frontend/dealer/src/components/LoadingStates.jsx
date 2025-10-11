@@ -1,6 +1,15 @@
+/**
+ * @fileoverview Loading state components including skeletons, spinners, and lazy loading
+ * @module components/LoadingStates
+ */
+
 import React from 'react'
 
-// Skeleton Loading Component
+/**
+ * Skeleton Loading Component for product cards
+ * @component
+ * @returns {JSX.Element} Skeleton card UI
+ */
 export const SkeletonCard = () => (
   <div className="bg-white dark:bg-slate-800 rounded-xl shadow-md overflow-hidden animate-pulse">
     <div className="h-48 md:h-52 lg:h-48 bg-slate-200 dark:bg-slate-700"></div>
@@ -16,7 +25,15 @@ export const SkeletonCard = () => (
   </div>
 )
 
-// Enhanced Loading Spinner with brand colors
+/**
+ * Enhanced Loading Spinner with brand colors
+ * @component
+ * @param {Object} props - Component props
+ * @param {string} [props.size='md'] - Spinner size (sm, md, lg, xl)
+ * @param {string} [props.color='primary'] - Spinner color (primary, brand, white, current)
+ * @param {string} [props.className=''] - Additional CSS classes
+ * @returns {JSX.Element} Loading spinner
+ */
 export const LoadingSpinner = ({ size = 'md', color = 'primary', className = '' }) => {
   const sizeClasses = {
     sm: 'w-4 h-4',
@@ -43,7 +60,14 @@ export const LoadingSpinner = ({ size = 'md', color = 'primary', className = '' 
   )
 }
 
-// Enhanced Page Loading with brand identity
+/**
+ * Enhanced Page Loading with brand identity
+ * @component
+ * @param {Object} props - Component props
+ * @param {string} [props.message='Đang tải...'] - Loading message
+ * @param {boolean} [props.show=true] - Whether to show the loader
+ * @returns {JSX.Element|null} Page loading overlay
+ */
 export const PageLoading = ({ message = 'Đang tải...', show = true }) => {
   if (!show) return null
 
@@ -89,7 +113,13 @@ export const LoadingButton = ({
   </button>
 )
 
-// Product Grid Skeleton
+/**
+ * Product Grid Skeleton for loading states
+ * @component
+ * @param {Object} props - Component props
+ * @param {number} [props.count=8] - Number of skeleton cards to display
+ * @returns {JSX.Element} Grid of skeleton cards
+ */
 export const ProductGridSkeleton = ({ count = 8 }) => (
   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6 xl:gap-7 2xl:gap-8 w-full px-4 sm:px-5 md:px-6 lg:px-8 xl:px-10 2xl:px-12">
     {Array.from({ length: count }).map((_, index) => (
@@ -98,7 +128,16 @@ export const ProductGridSkeleton = ({ count = 8 }) => (
   </div>
 )
 
-// Image Loading with Placeholder
+/**
+ * Image Loading with Placeholder and error handling
+ * @component
+ * @param {Object} props - Component props
+ * @param {string} props.src - Image source URL
+ * @param {string} props.alt - Image alt text
+ * @param {string} [props.className=''] - Additional CSS classes
+ * @param {JSX.Element} [props.placeholder=null] - Placeholder to show while loading
+ * @returns {JSX.Element} Lazy-loaded image with placeholder
+ */
 export const LazyImage = ({ src, alt, className = '', placeholder = null }) => {
   const [loading, setLoading] = React.useState(true)
   const [error, setError] = React.useState(false)

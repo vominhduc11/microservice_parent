@@ -1,16 +1,38 @@
+/**
+ * @fileoverview Main dashboard layout component wrapping all dealer pages
+ * @module components/DashboardLayout
+ */
+
 import { useEffect } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
+import PropTypes from 'prop-types'
 import Header from './Header'
 import Footer from './Footer'
 import Breadcrumb from './Breadcrumb'
 import { CartProvider } from '../context/CartContext'
 import { pageVariants } from '../utils/animations'
 
+/**
+ * Dashboard layout component providing consistent layout structure for all pages
+ * @component
+ * @param {Object} props - Component props
+ * @param {Object} props.dealerInfo - Dealer account information
+ * @param {Function} props.onLogout - Logout callback function
+ * @returns {JSX.Element} Rendered dashboard layout with nested routes
+ * @example
+ * <DashboardLayout
+ *   dealerInfo={{ name: 'ABC Dealer' }}
+ *   onLogout={() => handleLogout()}
+ * />
+ */
 const DashboardLayout = ({ dealerInfo, onLogout }) => {
   const location = useLocation()
-  
-  // Get current page from pathname for header active state
+
+  /**
+   * Determines current page identifier from pathname
+   * @returns {string} Current page identifier
+   */
   const getCurrentPage = () => {
     const path = location.pathname
     
@@ -73,6 +95,14 @@ const DashboardLayout = ({ dealerInfo, onLogout }) => {
       </div>
     </CartProvider>
   )
+}
+
+DashboardLayout.propTypes = {
+  dealerInfo: PropTypes.shape({
+    name: PropTypes.string,
+    accountId: PropTypes.number
+  }),
+  onLogout: PropTypes.func.isRequired
 }
 
 export default DashboardLayout

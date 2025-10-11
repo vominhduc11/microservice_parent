@@ -1,7 +1,30 @@
+/**
+ * @fileoverview Modal dialog component with overlay and customizable content
+ * @module components/UI/Modal
+ */
+
 import { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import Button from './Button'
 
+/**
+ * Modal dialog component with backdrop, keyboard navigation, and responsive sizing
+ * @component
+ * @param {Object} props - Component props
+ * @param {boolean} props.isOpen - Whether modal is open
+ * @param {Function} props.onClose - Callback to close modal
+ * @param {string} [props.title] - Modal title
+ * @param {React.ReactNode} props.children - Modal content
+ * @param {string} [props.size='md'] - Modal size (sm, md, lg, xl, full)
+ * @param {boolean} [props.showCloseButton=true] - Whether to show close button
+ * @param {boolean} [props.closeOnOverlayClick=true] - Whether clicking overlay closes modal
+ * @param {React.ReactNode} [props.footer] - Optional footer content
+ * @returns {JSX.Element|null} Rendered modal or null if closed
+ * @example
+ * <Modal isOpen={isOpen} onClose={handleClose} title="My Modal">
+ *   <p>Modal content here</p>
+ * </Modal>
+ */
 const Modal = ({
   isOpen,
   onClose,

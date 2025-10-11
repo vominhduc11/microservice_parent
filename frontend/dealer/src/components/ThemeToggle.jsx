@@ -1,5 +1,17 @@
+/**
+ * @fileoverview Theme toggle component for switching between light and dark modes
+ * @module components/ThemeToggle
+ */
+
 import React, { useState, useEffect } from 'react';
 
+/**
+ * Theme Toggle component for switching between light and dark modes
+ * @component
+ * @returns {JSX.Element} Theme toggle button
+ * @example
+ * <ThemeToggle />
+ */
 const ThemeToggle = () => {
   // Start with null to avoid hydration mismatch
   const [isDark, setIsDark] = useState(null);
@@ -35,6 +47,9 @@ const ThemeToggle = () => {
     }
   }, []);
 
+  /**
+   * Toggles between light and dark theme
+   */
   const toggleTheme = () => {
     try {
       const newTheme = !isDark;

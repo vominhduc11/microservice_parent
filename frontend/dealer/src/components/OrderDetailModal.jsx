@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Modal from 'react-modal'
+import PropTypes from 'prop-types'
 import { ordersAPI, productsAPI, dealerAPI, handleAPIError } from '../services/api'
 import { LoadingSpinner } from './LoadingStates'
 
@@ -369,6 +370,12 @@ const OrderDetailModal = ({ isOpen, onClose, orderId }) => {
       </div>
     </Modal>
   )
+}
+
+OrderDetailModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  orderId: PropTypes.number
 }
 
 export default OrderDetailModal

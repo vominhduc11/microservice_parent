@@ -1,5 +1,11 @@
+/**
+ * @fileoverview Product list component with filtering, pagination and quick view
+ * @module components/ProductList
+ */
+
 import { useState, useMemo, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import PropTypes from 'prop-types'
 import { ProductGridSkeleton, LazyImage } from './LoadingStates'
 import { NetworkError, EmptyState } from './ErrorHandling'
 import QuickViewModal from './QuickViewModal'
@@ -10,7 +16,11 @@ import { productsAPI, handleAPIError } from '../services/api'
 import { Smartphone, Filter, Eye, X, RotateCcw } from 'lucide-react'
 import { containerVariants, itemVariants, cardHoverVariants } from '../utils/animations'
 
-// Helper function to parse image JSON string
+/**
+ * Parses image URL from JSON string
+ * @param {string} imageStr - JSON string containing image data
+ * @returns {string} Image URL
+ */
 const parseImageUrl = (imageStr) => {
   try {
     const imageObj = JSON.parse(imageStr)
@@ -20,7 +30,12 @@ const parseImageUrl = (imageStr) => {
   }
 }
 
-// Helper function to transform API product data
+/**
+ * Transforms API product data to frontend format
+ * @param {Object} apiProduct - Product data from API
+ * @param {number} stock - Available stock quantity
+ * @returns {Object} Transformed product object
+ */
 const transformProduct = (apiProduct, stock = 0) => {
   return {
     id: apiProduct.id,
@@ -34,6 +49,15 @@ const transformProduct = (apiProduct, stock = 0) => {
   }
 }
 
+/**
+ * Product list component displaying filterable grid of products
+ * @component
+ * @param {Object} props - Component props
+ * @param {Function} props.onProductClick - Callback when product is clicked
+ * @returns {JSX.Element} Rendered product list
+ * @example
+ * <ProductList onProductClick={(product) => handleProductClick(product)} />
+ */
 const ProductList = ({ onProductClick }) => {
   const navigate = useNavigate()
   const [filters, setFilters] = useState({})
@@ -430,6 +454,10 @@ const ProductList = ({ onProductClick }) => {
       )}
     </div>
   )
+}
+
+ProductList.propTypes = {
+  onProductClick: PropTypes.func.isRequired
 }
 
 export default ProductList

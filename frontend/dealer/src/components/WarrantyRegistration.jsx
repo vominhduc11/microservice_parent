@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { productsAPI, warrantyAPI, ordersAPI, getDealerInfo, handleAPIError } from '../services/api'
-import './WarrantyRegistration.css'
 
 const SAMPLE_PRODUCTS = [
   { id: 1, name: 'iPhone 15 Pro Max', warranty: 12 },
@@ -307,8 +306,6 @@ const WarrantyRegistration = () => {
         }
       }
 
-      console.log('🔥 Warranty registration data:', warrantyData)
-
       const response = await warrantyAPI.register(warrantyData)
 
       if (response.success) {
@@ -324,8 +321,6 @@ const WarrantyRegistration = () => {
           console.warn('Some serials failed to create warranty:', response.data.failedSerials)
           // Could show a warning to user about failed serials
         }
-
-        console.log(`✅ Created ${response.data.totalWarranties} warranties for customer: ${response.data.customerName}`)
 
       } else {
         throw new Error(response.message || 'Đăng ký bảo hành thất bại')
@@ -804,5 +799,7 @@ const WarrantyRegistration = () => {
     </div>
   )
 }
+
+// WarrantyRegistration has no props
 
 export default WarrantyRegistration

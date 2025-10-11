@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import PropTypes from 'prop-types'
 
 const Pagination = ({ 
   currentPage = 1, 
@@ -187,6 +188,28 @@ const Pagination = ({
   )
 }
 
+Pagination.propTypes = {
+  currentPage: PropTypes.number,
+  totalItems: PropTypes.number,
+  itemsPerPage: PropTypes.number,
+  onPageChange: PropTypes.func,
+  showFirstLast: PropTypes.bool,
+  showPageNumbers: PropTypes.bool,
+  maxPageNumbers: PropTypes.number,
+  className: PropTypes.string
+}
+
+Pagination.defaultProps = {
+  currentPage: 1,
+  totalItems: 0,
+  itemsPerPage: 10,
+  onPageChange: () => {},
+  showFirstLast: true,
+  showPageNumbers: true,
+  maxPageNumbers: 5,
+  className: ''
+}
+
 // Hook for pagination logic
 export const usePagination = (items = [], itemsPerPage = 10, initialPage = 1) => {
   const [currentPage, setCurrentPage] = useState(initialPage)
@@ -279,6 +302,17 @@ export const SimplePagination = ({
       </button>
     </div>
   )
+}
+
+SimplePagination.propTypes = {
+  currentPage: PropTypes.number.isRequired,
+  totalPages: PropTypes.number.isRequired,
+  onPageChange: PropTypes.func.isRequired,
+  className: PropTypes.string
+}
+
+SimplePagination.defaultProps = {
+  className: ''
 }
 
 export default Pagination

@@ -1,9 +1,31 @@
+/**
+ * @fileoverview Main header navigation component with responsive design
+ * @module components/Header
+ */
+
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import PropTypes from 'prop-types'
 import { useCart } from '../context/CartContext'
 import ThemeToggle from './ThemeToggle'
 import { Smartphone, Package, ShoppingCart, Shield, LogOut } from 'lucide-react'
 
+/**
+ * Header component with navigation menu and user controls
+ * @component
+ * @param {Object} props - Component props
+ * @param {Object} props.dealerInfo - Dealer account information
+ * @param {string} props.dealerInfo.name - Dealer name to display
+ * @param {Function} props.onLogout - Callback function for logout action
+ * @param {string} props.currentPage - Currently active page identifier
+ * @returns {JSX.Element} Rendered header component
+ * @example
+ * <Header
+ *   dealerInfo={{ name: 'ABC Dealer' }}
+ *   onLogout={() => handleLogout()}
+ *   currentPage="products"
+ * />
+ */
 const Header = ({ dealerInfo, onLogout, currentPage }) => {
   const navigate = useNavigate()
   const { getCartCount } = useCart()
@@ -15,6 +37,10 @@ const Header = ({ dealerInfo, onLogout, currentPage }) => {
     { id: 'warranty', label: 'Bảo hành', icon: Shield }
   ]
 
+  /**
+   * Handles navigation to different sections
+   * @param {string} itemId - Navigation item identifier
+   */
   const handleNavigation = (itemId) => {
     switch (itemId) {
       case 'products':
@@ -130,6 +156,14 @@ const Header = ({ dealerInfo, onLogout, currentPage }) => {
       </nav>
     </>
   )
+}
+
+Header.propTypes = {
+  dealerInfo: PropTypes.shape({
+    name: PropTypes.string
+  }),
+  onLogout: PropTypes.func.isRequired,
+  currentPage: PropTypes.string.isRequired
 }
 
 export default Header

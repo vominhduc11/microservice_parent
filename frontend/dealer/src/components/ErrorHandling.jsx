@@ -1,6 +1,19 @@
+/**
+ * @fileoverview Error handling components including error boundaries and error UI
+ * @module components/ErrorHandling
+ */
+
 import React from 'react'
 
-// Error Boundary Component
+/**
+ * Error Boundary Component for catching React errors
+ * @class
+ * @extends React.Component
+ * @example
+ * <ErrorBoundary>
+ *   <YourApp />
+ * </ErrorBoundary>
+ */
 export class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props)
@@ -38,7 +51,14 @@ export class ErrorBoundary extends React.Component {
   }
 }
 
-// Error Fallback UI
+/**
+ * Error Fallback UI component displayed when an error occurs
+ * @component
+ * @param {Object} props - Component props
+ * @param {Error} props.error - The error object
+ * @param {Function} props.resetError - Function to reset error state
+ * @returns {JSX.Element} Error fallback UI
+ */
 export const ErrorFallback = ({ error, resetError }) => (
   <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 px-4">
     <div className="max-w-md w-full bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6 text-center">
@@ -79,7 +99,14 @@ export const ErrorFallback = ({ error, resetError }) => (
   </div>
 )
 
-// Network Error Component
+/**
+ * Network Error Component for displaying connection errors
+ * @component
+ * @param {Object} props - Component props
+ * @param {Function} props.onRetry - Callback function to retry the operation
+ * @param {string} [props.message='Không thể kết nối mạng'] - Error message to display
+ * @returns {JSX.Element} Network error UI
+ */
 export const NetworkError = ({ onRetry, message = 'Không thể kết nối mạng' }) => (
   <div className="text-center py-12">
     <div className="text-6xl mb-4">📡</div>
@@ -96,12 +123,21 @@ export const NetworkError = ({ onRetry, message = 'Không thể kết nối mạ
   </div>
 )
 
-// Empty State Component
-export const EmptyState = ({ 
-  icon = '📭', 
-  title = 'Không có dữ liệu', 
+/**
+ * Empty State Component for displaying when no data is available
+ * @component
+ * @param {Object} props - Component props
+ * @param {string} [props.icon='📭'] - Icon to display
+ * @param {string} [props.title='Không có dữ liệu'] - Title text
+ * @param {string} [props.description='Chưa có thông tin để hiển thị'] - Description text
+ * @param {JSX.Element} [props.action=null] - Optional action button
+ * @returns {JSX.Element} Empty state UI
+ */
+export const EmptyState = ({
+  icon = '📭',
+  title = 'Không có dữ liệu',
   description = 'Chưa có thông tin để hiển thị',
-  action = null 
+  action = null
 }) => (
   <div className="text-center py-12">
     <div className="text-6xl mb-4">{icon}</div>

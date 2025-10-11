@@ -1,6 +1,18 @@
+/**
+ * @fileoverview Order success page displaying order confirmation and details
+ * @module pages/OrderSuccessPage
+ */
+
 import { useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 
+/**
+ * Order success page component showing order confirmation and next steps
+ * @component
+ * @returns {JSX.Element} Rendered order success page
+ * @example
+ * <OrderSuccessPage />
+ */
 const OrderSuccessPage = () => {
   const navigate = useNavigate()
   const location = useLocation()
@@ -12,6 +24,11 @@ const OrderSuccessPage = () => {
     items: []
   }
 
+  /**
+   * Formats price value to Vietnamese currency format
+   * @param {number} price - Price value to format
+   * @returns {string} Formatted price string
+   */
   const formatPrice = (price) => {
     return new Intl.NumberFormat('vi-VN', {
       style: 'currency',

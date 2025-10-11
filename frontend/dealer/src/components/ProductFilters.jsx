@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 
 const ProductFilters = ({ 
   onFiltersChange, 
@@ -376,6 +377,17 @@ const ProductFilters = ({
       )}
     </div>
   )
+}
+
+ProductFilters.propTypes = {
+  onFiltersChange: PropTypes.func.isRequired,
+  totalProducts: PropTypes.number,
+  className: PropTypes.string
+}
+
+ProductFilters.defaultProps = {
+  totalProducts: 0,
+  className: ''
 }
 
 export default ProductFilters

@@ -1,7 +1,19 @@
+/**
+ * @fileoverview Footer component with site information and navigation links
+ * @module components/Footer
+ */
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Music, Smartphone, Shield, ShoppingCart, Mail, Phone, MapPin, Facebook, Youtube, Linkedin } from 'lucide-react';
 
+/**
+ * Footer component displaying company info, quick links, and social media
+ * @component
+ * @returns {JSX.Element} Rendered footer component
+ * @example
+ * <Footer />
+ */
 const Footer = () => {
   const navigate = useNavigate();
   const currentYear = new Date().getFullYear();
@@ -134,5 +146,7 @@ const Footer = () => {
     </footer>
   );
 };
+
+// Footer has no props, so no PropTypes needed
 
 export default Footer;

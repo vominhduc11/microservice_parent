@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import PropTypes from 'prop-types'
 
 const ProductDetailTabs = ({ product }) => {
   const [activeTab, setActiveTab] = useState('description')
@@ -252,6 +253,41 @@ const ProductDetailTabs = ({ product }) => {
       </div>
     </div>
   )
+}
+
+ProductDetailTabs.propTypes = {
+  product: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    sku: PropTypes.string,
+    description: PropTypes.string,
+    price: PropTypes.number.isRequired,
+    stock: PropTypes.number,
+    warranty: PropTypes.number,
+    specifications: PropTypes.shape({
+      general: PropTypes.arrayOf(PropTypes.shape({
+        label: PropTypes.string,
+        value: PropTypes.string
+      })),
+      technical: PropTypes.arrayOf(PropTypes.shape({
+        label: PropTypes.string,
+        value: PropTypes.string
+      }))
+    }),
+    descriptions: PropTypes.arrayOf(PropTypes.shape({
+      type: PropTypes.string,
+      text: PropTypes.string,
+      imageUrl: PropTypes.string,
+      url: PropTypes.string,
+      link: PropTypes.shape({
+        url: PropTypes.string
+      })
+    })),
+    videos: PropTypes.arrayOf(PropTypes.shape({
+      title: PropTypes.string,
+      description: PropTypes.string,
+      videoUrl: PropTypes.string
+    }))
+  }).isRequired
 }
 
 export default ProductDetailTabs

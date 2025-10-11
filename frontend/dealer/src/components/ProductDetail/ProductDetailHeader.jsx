@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types'
+
 const ProductDetailHeader = ({ product, onBack }) => {
 
   const formatPrice = (price) => {
@@ -71,6 +73,20 @@ const ProductDetailHeader = ({ product, onBack }) => {
       </div>
     </>
   )
+}
+
+ProductDetailHeader.propTypes = {
+  product: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    sku: PropTypes.string,
+    description: PropTypes.string,
+    price: PropTypes.number.isRequired,
+    warranty: PropTypes.number,
+    wholesalePrice: PropTypes.arrayOf(PropTypes.shape({
+      price: PropTypes.number
+    }))
+  }).isRequired,
+  onBack: PropTypes.func.isRequired
 }
 
 export default ProductDetailHeader

@@ -1,4 +1,27 @@
-// API Service for centralized HTTP requests and error handling
+/**
+ * @fileoverview API Service for centralized HTTP requests and error handling
+ * @module services/api
+ *
+ * This module provides a comprehensive API service layer with:
+ * - Centralized HTTP request handling
+ * - Automatic token refresh
+ * - Error handling and mapping
+ * - Request timeout and retry logic
+ * - Type-safe API endpoints
+ *
+ * @example
+ * import { productsAPI, authAPI, handleAPIError } from './services/api'
+ *
+ * // Fetch products
+ * const products = await productsAPI.getAll()
+ *
+ * // Handle errors
+ * try {
+ *   await authAPI.login({ username, password })
+ * } catch (error) {
+ *   handleAPIError(error)
+ * }
+ */
 import { API_CONFIG as CONFIG, ERROR_MESSAGES, STORAGE_KEYS } from '../constants'
 
 // API Configuration
@@ -17,7 +40,19 @@ const onTokenRefreshed = (token) => {
   refreshSubscribers = []
 }
 
-// Custom Error Classes
+/**
+ * Custom Error Classes for API responses
+ */
+
+/**
+ * Base API Error class
+ * @class
+ * @extends Error
+ * @param {string} message - Error message
+ * @param {number} status - HTTP status code
+ * @param {string} code - Error code
+ * @param {Error} [originalError=null] - Original error object
+ */
 export class APIError extends Error {
   constructor(message, status, code, originalError = null) {
     super(message)
@@ -72,7 +107,13 @@ export class ServerError extends APIError {
   }
 }
 
-// Utility function to get dealer info from localStorage
+/**
+ * Retrieves dealer information from localStorage
+ * @returns {Object|null} Dealer info object or null if not found
+ * @property {string} accountId - Dealer account ID
+ * @property {string} accessToken - JWT access token
+ * @property {string} refreshToken - JWT refresh token
+ */
 export const getDealerInfo = () => {
   try {
     const savedLogin = localStorage.getItem(STORAGE_KEYS.DEALER_LOGIN)

@@ -1,5 +1,28 @@
-import { useState } from 'react'
+/**
+ * @fileoverview Checkout form component for order processing
+ * @module components/CheckoutForm
+ */
 
+import { useState } from 'react'
+import PropTypes from 'prop-types'
+
+/**
+ * Checkout form component with customer information and payment method selection
+ * @component
+ * @param {Object} props - Component props
+ * @param {Array} props.cart - Cart items array
+ * @param {number} props.totalAmount - Total cart amount
+ * @param {Function} props.onPaymentLater - Callback for payment later option
+ * @param {Function} props.onPaymentNow - Callback for immediate payment
+ * @returns {JSX.Element} Rendered checkout form
+ * @example
+ * <CheckoutForm
+ *   cart={cartItems}
+ *   totalAmount={50000000}
+ *   onPaymentLater={(data) => handlePayLater(data)}
+ *   onPaymentNow={(data) => handlePayNow(data)}
+ * />
+ */
 const CheckoutForm = ({ cart, totalAmount, onPaymentLater, onPaymentNow }) => {
   const [paymentMethod, setPaymentMethod] = useState('later')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -18,6 +41,11 @@ const CheckoutForm = ({ cart, totalAmount, onPaymentLater, onPaymentNow }) => {
     return date.toLocaleDateString('vi-VN')
   })()
 
+  /**
+   * Formats price to Vietnamese currency format
+   * @param {number} price - Price value
+   * @returns {string} Formatted price string
+   */
   const formatPrice = (price) => {
     return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
@@ -25,6 +53,10 @@ const CheckoutForm = ({ cart, totalAmount, onPaymentLater, onPaymentNow }) => {
     }).format(price)
   }
 
+  /**
+   * Handles input field changes
+   * @param {Event} e - Input change event
+   */
   const handleInputChange = (e) => {
     const { name, value } = e.target
     setCustomerInfo(prev => ({
@@ -40,25 +72,29 @@ const CheckoutForm = ({ cart, totalAmount, onPaymentLater, onPaymentNow }) => {
     }
   }
 
+  /**
+   * Validates checkout form fields
+   * @returns {boolean} True if form is valid
+   */
   const validateForm = () => {
     const newErrors = {}
-    
+
     if (!customerInfo.name.trim()) {
       newErrors.name = 'Vui lòng nhập họ tên khách hàng'
     }
-    
+
     if (!customerInfo.phone.trim()) {
       newErrors.phone = 'Vui lòng nhập số điện thoại'
     } else if (!/^[0-9]{10,11}$/.test(customerInfo.phone.replace(/\s/g, ''))) {
       newErrors.phone = 'Số điện thoại không hợp lệ'
     }
-    
+
     if (!customerInfo.email.trim()) {
       newErrors.email = 'Vui lòng nhập email'
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerInfo.email)) {
       newErrors.email = 'Email không hợp lệ'
     }
-    
+
     if (!customerInfo.address.trim()) {
       newErrors.address = 'Vui lòng nhập địa chỉ'
     }
@@ -67,6 +103,11 @@ const CheckoutForm = ({ cart, totalAmount, onPaymentLater, onPaymentNow }) => {
     return Object.keys(newErrors).length === 0
   }
 
+  /**
+   * Handles form submission
+   * @param {Event} e - Form submit event
+   * @returns {Promise<void>}
+   */
   const handleSubmit = async (e) => {
     e.preventDefault()
     
@@ -361,6 +402,19 @@ const CheckoutForm = ({ cart, totalAmount, onPaymentLater, onPaymentNow }) => {
       </div>
     </div>
   )
+}
+
+CheckoutForm.propTypes = {
+  cart: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+    price: PropTypes.number.isRequired,
+    quantity: PropTypes.number.isRequired,
+    image: PropTypes.string
+  })).isRequired,
+  totalAmount: PropTypes.number.isRequired,
+  onPaymentLater: PropTypes.func.isRequired,
+  onPaymentNow: PropTypes.func.isRequired
 }
 
 export default CheckoutForm
