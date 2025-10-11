@@ -278,7 +278,7 @@ const LoginPage = ({ onLogin }) => {
                     </button>
                   </div>
                 ) : (
-                  <form onSubmit={handleForgotPassword} className="space-y-3">
+                  <div className="space-y-3">
                     <div className="flex items-center gap-2 mb-2">
                       <button
                         type="button"
@@ -300,6 +300,12 @@ const LoginPage = ({ onLogin }) => {
                         placeholder="Email của bạn"
                         required
                         disabled={forgotLoading}
+                        onKeyPress={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault()
+                            handleForgotPassword(e)
+                          }
+                        }}
                         className="w-full pl-9 pr-4 py-2 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all"
                       />
                     </div>
@@ -307,7 +313,8 @@ const LoginPage = ({ onLogin }) => {
                       <p className="text-xs text-red-600 dark:text-red-400">{forgotError}</p>
                     )}
                     <button
-                      type="submit"
+                      type="button"
+                      onClick={handleForgotPassword}
                       disabled={forgotLoading}
                       className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white font-semibold text-xs rounded-lg transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
                     >
@@ -323,7 +330,7 @@ const LoginPage = ({ onLogin }) => {
                         'Gửi email khôi phục'
                       )}
                     </button>
-                  </form>
+                  </div>
                 )}
               </div>
             )}
