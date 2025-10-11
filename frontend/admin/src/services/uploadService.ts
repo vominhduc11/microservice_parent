@@ -1,5 +1,6 @@
 import { apiRequest, refreshAccessToken, getIsRefreshing, getRefreshPromise, setRefreshState } from './api';
 import { ApiResponse } from '@/types';
+import { env } from '@/config/env';
 
 // Helper function to get auth token - matching api.ts pattern
 const getAuthToken = (): string | null => {
@@ -39,7 +40,7 @@ class UploadService {
       formData.append('file', file);
       formData.append('type', 'image');
 
-      const response = await fetch(`/api/media/upload`, {
+      const response = await fetch(`${env.apiUrl}/api/media/upload`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${getAuthToken()}`
@@ -120,7 +121,7 @@ class UploadService {
     try {
       console.log('Starting file delete:', { publicId, resourceType });
 
-      const response = await fetch(`/api/media/delete?publicId=${encodeURIComponent(publicId)}`, {
+      const response = await fetch(`${env.apiUrl}/api/media/delete?publicId=${encodeURIComponent(publicId)}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${getAuthToken()}`
