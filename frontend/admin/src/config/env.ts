@@ -5,7 +5,7 @@
 
 export const env = {
   // API Configuration
-  apiUrl: import.meta.env.DEV ? '' : import.meta.env.VITE_API_URL || 'http://localhost:8080',
+  apiUrl: import.meta.env.VITE_API_URL || (import.meta.env.DEV ? '' : 'http://localhost:8080'),
   wsUrl: import.meta.env.VITE_WS_URL || 'http://localhost:8087',
 
   // App Configuration
