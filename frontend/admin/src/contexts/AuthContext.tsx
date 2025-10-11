@@ -51,9 +51,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isInitializing, setIsInitializing] = useState(true);
   const [skipValidation, setSkipValidation] = useState(false);
 
-  // Use absolute paths for nginx proxy
-  const AUTH_API_URL = `/api/auth/login`;
-  const REFRESH_API_URL = `/api/auth/refresh`;
+  // Use absolute URLs to API domain
+  const AUTH_API_URL = `${env.apiUrl}/api/auth/login`;
+  const REFRESH_API_URL = `${env.apiUrl}/api/auth/refresh`;
 
 
   // Token refresh has been removed to prevent rate limiting issues
